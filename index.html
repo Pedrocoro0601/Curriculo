@@ -17,9 +17,9 @@
             --font-tech: 'Space Mono', monospace;
         }
 
-        /* The scroll-snap-type property was removed from the html element. 
-           The <main> tag is the primary scrolling container, so defining scroll-snap there
-           is correct and prevents conflicting browser behaviors, especially on mobile. */
+        html {
+            scroll-snap-type: y mandatory;
+        }
 
         body {
             background-color: var(--bg-color);
@@ -391,7 +391,7 @@
                 <p class="mt-4 text-cyan-300 font-tech">SYSTEM INTERFACE: P.H.R.S. CURRICULO ONLINE</p>
             </div>
             <div class="mt-8 reveal delay-1">
-                <a href="#home" class="terminal-button inline-block p-4 border-2 hover:bg-cyan-400 hover:text-black sound-on-click">
+                <a id="iniciar-sistema-btn" class="terminal-button inline-block p-4 border-2 hover:bg-cyan-400 hover:text-black sound-on-click">
                     INICIAR_SISTEMA
                 </a>
             </div>
@@ -625,9 +625,9 @@
                     <p class="text-green-300">Curso UDE | 30h</p>
                 </div>
             </div>
-            <a href="#info-pessoal" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400 sound-on-click">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-            </a>
+            <a id="info-pessoal-next-btn" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400 sound-on-click"> 
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg> 
+            </a> 
         </section>
         
         <!-- Informações Pessoais -->
@@ -680,21 +680,27 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Clear any existing hash in the URL to prevent the browser from
+        // automatically scrolling to a specific section on page load.
+        if (window.location.hash) {
+            window.location.hash = '';
+        }
+
         // Ensure the page starts at the very top (Welcome section) for consistent behavior across devices.
         // Using a slight delay and scrollIntoView is more robust for scroll-snap and mobile browsers.
+        // This is primarily for initial load, not for navigation within the site.
         setTimeout(() => {
             const welcomeSection = document.getElementById('welcome');
             if (welcomeSection) {
                 welcomeSection.scrollIntoView({ behavior: 'instant' });
             }
-        }, 100); // Small delay to ensure elements are rendered
+        }, 200);
 
         let soundEnabled = false;
         const synth = new Tone.Synth().toDestination();
         const pluckSynth = new Tone.PluckSynth().toDestination();
-        let lastSoundTime = 0; // Initialize last sound time for sequential sound triggering
+        let lastSoundTime = 0;
 
-        // Function to initialize Tone.js audio context
         function initAudio() {
             if (Tone.context.state !== 'running') {
                 Tone.context.resume();
@@ -702,26 +708,21 @@
             soundEnabled = true;
         }
         
-        // Activate audio context on first user interaction
         document.body.addEventListener('click', initAudio, { once: true });
 
-        // Add sound to elements with 'sound-on-click' class
         document.querySelectorAll('.sound-on-click').forEach(el => {
             el.addEventListener('click', () => {
                 if (soundEnabled) {
-                    // Schedule sound with a small delay to avoid conflicts
                     const now = Tone.context.currentTime;
-                    const nextScheduledTime = Math.max(now, lastSoundTime + 0.05); // Minimum 50ms gap
+                    const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
                     pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
                     lastSoundTime = nextScheduledTime;
                 }
             });
         });
 
-        // Initialize particles.js for background effects
         particlesJS("particles-js", { particles: { number: { value: 80, density: { enable: true, value_area: 800 } }, color: { value: "#00ffff" }, shape: { type: "circle" }, opacity: { value: 0.5, random: true, anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false } }, size: { value: 2.5, random: true, anim: { enable: false } }, line_linked: { enable: true, distance: 150, color: "#888888", opacity: 0.2, width: 1 }, move: { enable: true, speed: 1, direction: "none", random: true, straight: false, out_mode: "out", bounce: false } }, interactivity: { detect_on: "canvas", events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: true, mode: "push" }, resize: true }, modes: { grab: { distance: 140, line_linked: { opacity: 0.5 } }, push: { particles_nb: 4 } } }, retina_detect: true });
 
-        // Intersection Observer for reveal animations on scroll
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -729,45 +730,44 @@
                         el.classList.add('visible');
                     });
                     
-                    // Specific effects for sections becoming visible
                     if (entry.target.id === 'home') {
                         runDecoderEffect(entry.target.querySelector('.decoder'));
                     }
-                    if (entry.target.id === 'contato') {
-                        initTerminal();
-                    }
+                    // Removed initTerminal from here to ensure it's only called from info-pessoal-next-btn
+                    // if (entry.target.id === 'contato') {
+                    //     if (terminalOutput.innerHTML === '' && !terminalInitialized) {
+                    //         initTerminal();
+                    //     }
+                    // }
                     if (entry.target.id === 'exp-journey') {
-                        showExperience(currentExperienceIndex); // Show the first experience
+                        showExperience(currentExperienceIndex);
                     }
-                    // Trigger sound when a section is revealed
                     if (soundEnabled) {
                         const now = Tone.context.currentTime;
-                        const nextScheduledTime = Math.max(now, lastSoundTime + 0.05); // Minimum 50ms gap
+                        const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
                         synth.triggerAttackRelease('C2', '8n', nextScheduledTime, 0.1);
                         lastSoundTime = nextScheduledTime;
                     }
                     
-                    revealObserver.unobserve(entry.target); // Stop observing once revealed
+                    revealObserver.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.3 }); // Trigger when 30% of the section is visible
+        }, { threshold: 0.3 });
 
-        // Observe all sections for reveal animations
         document.querySelectorAll('section').forEach(section => {
             revealObserver.observe(section);
         });
 
-        // Decoder effect for the main title on the 'home' section
         function runDecoderEffect(element) {
             if(!element) return;
             const originalText = element.innerText;
             const chars = '!<>-_\\/[]{}—=+*^?#________';
-            element.innerHTML = ''; // Clear text to prepare for character by character display
+            element.innerHTML = '';
 
             originalText.split('').forEach(char => {
                 const span = document.createElement('span');
                 if(char === ' ') {
-                    span.innerHTML = '&nbsp;'; // Preserve spaces
+                    span.innerHTML = '&nbsp;';
                 } else {
                     span.textContent = char;
                 }
@@ -777,19 +777,19 @@
             let iteration = 0;
             const interval = setInterval(() => {
                 Array.from(element.children).forEach((span, index) => {
-                    if (originalText[index] === ' ') return; // Skip spaces
+                    if (originalText[index] === ' ') return;
                     if (index < iteration) {
-                        span.innerText = originalText[index]; // Reveal original character
+                        span.innerText = originalText[index];
                     } else {
-                        span.innerText = chars[Math.floor(Math.random() * chars.length)]; // Show random character
+                        span.innerText = chars[Math.floor(Math.random() * chars.length)];
                     }
                 });
 
                 if(iteration >= originalText.length){ 
-                    clearInterval(interval); // Stop when all characters are revealed
+                    clearInterval(interval);
                 }
                 
-                iteration += 1 / 2; // Control speed of decoding
+                iteration += 1 / 2;
             }, 40);
         }
         
@@ -798,13 +798,10 @@
         const startConnectionBtn = document.getElementById('start-connection-btn');
         let terminalInitialized = false;
 
-        // Updated help text with initial messages
-        const helpTextContent = `STATUS: PRONTO PARA CONEXÃO\nOBJETIVO: INOVAR.COLABORAR.CRESCER.\nCOMANDOS:\n- contact  : Exibe informações de contato.\n- socials  : Mostra perfis sociais.\n- clear    : Limpa o terminal.\n- exit     : Encerra a sessão.`;
+        const helpTextContent = `STATUS: PRONTO PARA CONEXÃO\nOBJETIVO: INOVAR.COLABORAR.CRESCER.\nAGUARDANDO COMANDO...`;
         
-        // Function to type text character by character into the terminal output
         function typeToTerminal(text, callback, speed = 20) {
             let i = 0;
-            // Only add a newline if terminal output is not empty for continuous typing
             if (terminalOutput.innerHTML !== '') {
                 terminalOutput.innerHTML += '\n';
             }
@@ -812,7 +809,7 @@
                 if (i < text.length) {
                     terminalOutput.innerHTML += text.charAt(i);
                     i++;
-                    terminalOutput.scrollTop = terminalOutput.scrollHeight; // Scroll to bottom
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
                 } else {
                     clearInterval(interval);
                     if (callback) callback();
@@ -820,7 +817,6 @@
             }, speed);
         }
         
-        // Initialize the terminal with introductory messages
         function initTerminal() {
             if (terminalInitialized || !terminalInput) return;
             terminalInitialized = true;
@@ -830,22 +826,52 @@
             });
         }
 
-        // Event listener for terminal input (Enter key)
         if(terminalInput) {
             terminalInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     const command = terminalInput.value.trim().toLowerCase();
-                    terminalOutput.innerHTML += `\n<span class="text-cyan-400">> ${command}</span>\n`; // Echo command
-                    terminalInput.value = ''; // Clear input field
+                    terminalOutput.innerHTML += `\n<span class="text-cyan-400">> ${command}</span>\n`;
+                    terminalInput.value = '';
 
                     processCommand(command);
 
-                    terminalOutput.scrollTop = terminalOutput.scrollHeight; // Scroll to bottom
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
                 }
             });
         }
 
-        // Event listener for the "INICIAR CONEXÃO" button
+        // Event listener for the "INICIAR_SISTEMA" button on the Welcome screen
+        const iniciarSistemaBtn = document.getElementById('iniciar-sistema-btn');
+        if (iniciarSistemaBtn) {
+            iniciarSistemaBtn.addEventListener('click', (event) => {
+                event.preventDefault(); // Prevent default anchor link behavior
+                if (soundEnabled) {
+                    const now = Tone.context.currentTime;
+                    const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
+                    pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
+                    lastSoundTime = nextScheduledTime;
+                }
+                document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+
+        // Event listener for the NEXT button on "Informações Pessoais" to initiate the terminal
+        const infoPessoalNextBtn = document.getElementById('info-pessoal-next-btn');
+        if (infoPessoalNextBtn) {
+            infoPessoalNextBtn.addEventListener('click', (event) => {
+                event.preventDefault(); // Prevent default anchor link behavior
+                if (soundEnabled) {
+                    const now = Tone.context.currentTime;
+                    const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
+                    pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
+                    lastSoundTime = nextScheduledTime;
+                }
+                document.getElementById('contato').scrollIntoView({ behavior: 'smooth' });
+                initTerminal(); // Explicitly call initTerminal here
+            });
+        }
+
+        // Event listener for the "INICIAR CONEXÃO" button (inside the terminal)
         startConnectionBtn.addEventListener('click', () => {
             if (soundEnabled) {
                 const now = Tone.context.currentTime;
@@ -853,39 +879,39 @@
                 pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
                 lastSoundTime = nextScheduledTime;
             }
-            // Replace with your actual links
-             window.open('https://www.linkedin.com/in/pedro-h-r-s', '_blank');
-             window.open('https://wa.me/553498831561', '_blank');
+            window.location.href = '#'; 
         });
 
 
-        // Function to process terminal commands
         function processCommand(command) {
-            startConnectionBtn.style.display = 'none'; // Hide by default
             switch (command) {
                 case 'help':
                     typeToTerminal(helpTextContent, () => {
-                        startConnectionBtn.style.display = 'block'; // Show button after 'help'
+                        startConnectionBtn.style.display = 'block';
                     });
                     break;
                 case 'contact':
-                    typeToTerminal("Iniciando conexão segura...\n- WhatsApp: <a href='https://wa.me/5534998831561' target='_blank' class='text-white underline hover:text-green-300'>+55 34 99883-1561</a>\n- Email: <a href='mailto:pedro.hrs@hotmail.com' class='text-white underline hover:text-green-300'>pedro.hrs@hotmail.com</a>");
+                    typeToTerminal("Iniciando conexão segura...\n- WhatsApp: <a href='https://wa.me/553498831561' target='_blank' class='text-white underline hover:text-green-300'>+55 34 99883-1561</a>\n- Email: <a href='mailto:pedro.hrs@hotmail.com' class='text-white underline hover:text-green-300'>pedro.hrs@hotmail.com</a>");
+                    startConnectionBtn.style.display = 'none';
                     break;
                 case 'socials':
-                    typeToTerminal("Acessando perfis...\n- LinkedIn: <a href='https://www.linkedin.com/in/pedro-h-r-s' target='_blank' class='text-white underline hover:text-green-300'>/in/pedro-h-r-s</a>\n- GitHub: <a href='https://github.com/pedrohrs-dev' target='_blank' class='text-white underline hover:text-green-300'>/pedrohrs-dev</a>");
+                    typeToTerminal("Acessando perfis...\n- LinkedIn: <a href='#' class='text-white underline hover:text-green-300'>/in/pedro-h-r-s</a>\n- GitHub: <a href='#' class='text-white underline hover:text-green-300'>/pedrohrs-dev</a>");
+                    startConnectionBtn.style.display = 'none';
                     break;
                 case 'clear':
                     terminalOutput.innerHTML = '';
+                    startConnectionBtn.style.display = 'none';
                     break;
                 case 'exit':
                     typeToTerminal("Conexão encerrada.");
+                    startConnectionBtn.style.display = 'none';
                     break;
                 default:
                     typeToTerminal(`Comando não reconhecido: '${command}'. Digite 'help'.`);
+                    startConnectionBtn.style.display = 'none';
             }
         }
 
-        // Data for professional experiences
         const experiences = [
             {
                 title: 'Auxiliar de Veterinário',
@@ -913,7 +939,6 @@
         const nextExperienceBtn = document.getElementById('next-experience-btn');
         const expJourneyNextSectionBtn = document.getElementById('exp-journey-next-section-btn');
 
-        // Function to update the displayed experience card
         function updateExperienceCard(index) {
             const exp = experiences[index];
             experienceCardContainer.innerHTML = `
@@ -924,16 +949,11 @@
                     <p class="line4 text-gray-300"><span class="text-purple-300">...</span> LOG: ${exp.log}</p>
                 </div>
             `;
-            // Add 'visible' class after a short delay to trigger transition
             setTimeout(() => {
-                const card = experienceCardContainer.querySelector('.terminal-card');
-                if (card) {
-                    card.classList.add('visible');
-                }
-            }, 50);
+                experienceCardContainer.querySelector('.terminal-card').classList.add('visible');
+            }, 100);
         }
 
-        // Function to show a specific experience by index
         function showExperience(index) {
             if (index >= 0 && index < experiences.length) {
                 currentExperienceIndex = index;
@@ -942,9 +962,7 @@
             }
         }
 
-        // Function to update the state of navigation buttons
         function updateNavigationButtons() {
-            // Update Prev button state
             if (currentExperienceIndex === 0) {
                 prevExperienceBtn.classList.add('opacity-50', 'cursor-not-allowed');
                 prevExperienceBtn.disabled = true;
@@ -953,43 +971,41 @@
                 prevExperienceBtn.disabled = false;
             }
 
-            // Update Next button state
             if (currentExperienceIndex === experiences.length - 1) {
                 nextExperienceBtn.classList.add('opacity-50', 'cursor-not-allowed');
                 nextExperienceBtn.disabled = true;
-                expJourneyNextSectionBtn.style.display = 'block'; // Use block/none for visibility
+                expJourneyNextSectionBtn.classList.remove('hidden');
             } else {
                 nextExperienceBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                 nextExperienceBtn.disabled = false;
-                expJourneyNextSectionBtn.style.display = 'none'; // Hide scroll down button
+                expJourneyNextSectionBtn.classList.add('hidden');
             }
         }
-        
-        // Initial setup for experience navigation
-        if (expJourneyNextSectionBtn) expJourneyNextSectionBtn.style.display = 'none';
 
-        // Event listeners for experience navigation buttons
-        if (prevExperienceBtn) {
-            prevExperienceBtn.addEventListener('click', () => {
-                if (soundEnabled) {
-                    pluckSynth.triggerAttackRelease('C4', '8n', Tone.now());
-                }
-                if (currentExperienceIndex > 0) {
-                    showExperience(currentExperienceIndex - 1);
-                }
-            });
-        }
+        prevExperienceBtn.addEventListener('click', () => {
+            if (soundEnabled) {
+                const now = Tone.context.currentTime;
+                const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
+                pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
+                lastSoundTime = nextScheduledTime;
+            }
+            if (currentExperienceIndex > 0) {
+                showExperience(currentExperienceIndex - 1);
+            }
+        });
 
-        if (nextExperienceBtn) {
-            nextExperienceBtn.addEventListener('click', () => {
-                if (soundEnabled) {
-                    pluckSynth.triggerAttackRelease('C4', '8n', Tone.now());
-                }
-                if (currentExperienceIndex < experiences.length - 1) {
-                    showExperience(currentExperienceIndex + 1);
-                }
-            });
-        }
+        nextExperienceBtn.addEventListener('click', () => {
+            if (soundEnabled) {
+                const now = Tone.context.currentTime;
+                const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
+                pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
+                lastSoundTime = nextScheduledTime;
+            }
+            if (currentExperienceIndex < experiences.length - 1) {
+                showExperience(currentExperienceIndex + 1);
+            }
+        });
+
     });
     </script>
 </body>
