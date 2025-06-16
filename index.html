@@ -177,16 +177,11 @@
             font-size: clamp(0.7rem, 2.5vw, 0.9rem);
             line-height: 1.6; text-align: left; white-space: pre-wrap; word-break: break-all;
         }
-        .terminal-input-line { display: flex; }
-        .prompt { color: var(--primary-glow-color); flex-shrink: 0; }
-        .terminal-input {
-            background: transparent; border: none; outline: none;
-            color: #fff; font-family: var(--font-tech);
-            font-size: clamp(0.7rem, 2.5vw, 0.9rem);
-            flex-grow: 1; padding-left: 0.5rem;
-        }
-        .cursor { display: inline-block; width: 8px; height: 1.2em; background: white; animation: blink-caret 1s step-end infinite; }
-        @keyframes blink-caret { from, to { background: transparent; } 50% { background: white; } }
+        /* Remove terminal input line styling as it will be removed from HTML */
+        .prompt { display: none; } /* Hide the prompt if input is not there */
+        .terminal-input { display: none; } /* Hide the input field */
+        .cursor { display: none; } /* Hide the blinking cursor */
+
         .terminal-button { font-family: var(--font-tech); letter-spacing: 0.2em; transition: all 0.3s ease; border-color: var(--primary-glow-color); color: var(--primary-glow-color); }
         .terminal-button:hover { background-color: var(--primary-glow-color); color: var(--bg-color); box-shadow: 0 0 15px var(--primary-glow-color); }
         
@@ -455,10 +450,10 @@
             <div class="reveal">
                 <div class="image-fuser mx-auto mb-6">
                     <div class="image-base">
-                        <img src="https://i.imgur.com/kY8p2gH.png" alt="Imagem Veterinária" onerror="this.onerror=null; this.src='https://placehold.co/160x160/6a0dad/e0e0e0?text=VET';">
+                        <img src="imagem1.1.png" alt="Imagem Veterinária" onerror="this.onerror=null; this.src='https://placehold.co/160x160/6a0dad/e0e0e0?text=VET';">
                     </div>
                     <div class="image-overlay-wrapper">
-                        <img src="https://i.imgur.com/b28eF68.png" alt="Imagem Tecnologia" onerror="this.onerror=null; this.src='https://placehold.co/160x160/00ffff/0a0a1a?text=TECH';">
+                        <img src="imagem2.2.png" alt="Imagem Tecnologia" onerror="this.onerror=null; this.src='https://placehold.co/160x160/00ffff/0a0a1a?text=TECH';">
                     </div>
                     <div class="horizontal-scanline"></div>
                 </div>
@@ -671,11 +666,12 @@
         <section id="contato">
             <div class="p-4 sm:p-6 rounded-lg bg-black/50 w-full max-w-sm sm:max-w-md terminal-window reveal">
                 <div id="terminal-output" class="terminal-output h-48 overflow-y-auto pr-2"></div>
-                <div class="terminal-input-line mt-4">
+                <!-- Removed terminal input line to prevent user typing -->
+                <!-- <div class="terminal-input-line mt-4">
                     <span class="prompt">&gt;</span>
                     <input type="text" id="terminal-input" class="terminal-input" autofocus autocomplete="off">
                     <span class="cursor"></span>
-                </div>
+                </div> -->
             </div>
             <button id="start-connection-btn" class="terminal-button mt-4 p-4 border-2 hover:bg-cyan-400 hover:text-black sound-on-click" style="display: none;">
                 INICIAR CONEXÃO
@@ -798,11 +794,11 @@
         }
         
         const terminalOutput = document.getElementById('terminal-output');
-        const terminalInput = document.getElementById('terminal-input');
+        // const terminalInput = document.getElementById('terminal-input'); // Removed
         const startConnectionBtn = document.getElementById('start-connection-btn');
         let terminalInitialized = false;
 
-        const helpTextContent = `STATUS: PRONTO PARA CONEXÃO\nOBJETIVO: INOVAR.COLABORAR.CRESCER.\nAGUARDANDO COMANDO...`;
+        const helpTextContent = `STATUS: PRONTO PARA CONEXÃO\nOBJETIVO: INOVAR. COLABORAR. CRESCER.\nAGUARDANDO COMANDO...`;
         
         function typeToTerminal(text, callback, speed = 20) {
             let i = 0;
@@ -822,19 +818,20 @@
         }
         
         function initTerminal() {
-            if (terminalInitialized || !terminalInput) return;
+            // Check if terminal is already initialized
+            if (terminalInitialized) return;
             terminalInitialized = true;
-            terminalInput.focus();
-            // Automatically type 'help' and process it
+            
+            // Simulate typing initial message and then the 'help' command
             typeToTerminal("Terminal de Contato Ativo...", () => {
                 typeToTerminal("> help", () => { // Simulate typing '> help'
                     processCommand('help'); // Then execute the help command
-                    terminalInput.focus();
                 }, 50); // Slightly faster typing for automated command
             });
         }
 
-        if(terminalInput) {
+        // Removed keydown listener for terminal input since it's no longer typable
+        /* if(terminalInput) {
             terminalInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     const command = terminalInput.value.trim().toLowerCase();
@@ -846,7 +843,7 @@
                     terminalOutput.scrollTop = terminalOutput.scrollHeight;
                 }
             });
-        }
+        } */
 
         // Event listener for the "INICIAR_SISTEMA" button on the Welcome screen
         const iniciarSistemaBtn = document.getElementById('iniciar-sistema-btn');
@@ -902,17 +899,21 @@
                 pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
                 lastSoundTime = nextScheduledTime;
             }
-            window.location.href = '#'; 
+            // Updated link to WhatsApp
+            window.location.href = 'https://api.whatsapp.com/send/?phone=5534988301561&text=Quero+te+contratar%21&type=phone_number&app_absent=0'; 
         });
 
 
         function processCommand(command) {
+            // Simplified processCommand since user cannot type arbitrary commands
             switch (command) {
                 case 'help':
                     typeToTerminal(helpTextContent, () => {
                         startConnectionBtn.style.display = 'block';
                     });
                     break;
+                // Other commands (contact, socials, clear, exit) are not directly callable by user
+                // but if they were invoked by other means, they would still function
                 case 'contact':
                     typeToTerminal("Iniciando conexão segura...\n- WhatsApp: <a href='https://wa.me/553498831561' target='_blank' class='text-white underline hover:text-green-300'>+55 34 99883-1561</a>\n- Email: <a href='mailto:pedro.hrs@hotmail.com' class='text-white underline hover:text-green-300'>pedro.hrs@hotmail.com</a>");
                     startConnectionBtn.style.display = 'none';
@@ -930,7 +931,9 @@
                     startConnectionBtn.style.display = 'none';
                     break;
                 default:
-                    typeToTerminal(`Comando não reconhecido: '${command}'. Digite 'help'.`);
+                    // This default case should ideally not be hit if user cannot type.
+                    // But if somehow a non-defined command is passed to processCommand, it handles it.
+                    typeToTerminal(`Comando não reconhecido: '${command}'.`); 
                     startConnectionBtn.style.display = 'none';
             }
         }
@@ -940,19 +943,19 @@
                 title: 'Auxiliar de Veterinário',
                 local: 'Clínica Amisvet',
                 period: '2023 - 2024',
-                log: 'Atuei na linha de frente do cuidado animal e como elo vital na gestão da informação, utilizando o sistema SimplesVet e aplicando rigor em cada etapa.'
+                log: 'Atuava na gestão de internações, com atualização de prontuários no SimplesVet, administração de medicações, cuidados com acessos venosos e higiene dos pacientes. Também auxiliava em consultas, cirurgias e rotinas clínicas.'
             },
             {
                 title: 'Monitor de Clínica Médica',
                 local: 'Faculdade Patos de Minas',
                 period: '2021 - 2022',
-                log: 'Como monitor, desenvolvi uma visão estratégica sobre eficiência operacional, otimizando o fluxo de trabalho e garantindo precisão em cálculos e controle de estoque.'
+                log: 'Atuava no suporte a cirurgias e consultas, auxiliando professores e alunos em rotinas clínicas e acadêmicas. Também era responsável pelo agendamento, organização e esterilização de materiais, além do controle de estoque e apoio nos cálculos de medicações e soluções.'
             },
             {
                 title: 'Estagiário',
                 local: 'Clínica Veterinária Animale',
                 period: '2020 - 2023',
-                log: 'Imersão profunda no cotidiano veterinário, solidificando minha compreensão sobre a importância da integridade e da acessibilidade dos dados para o diagnóstico e tratamento.'
+                log: 'Auxiliava no cuidado e recuperação dos animais, realizando alimentação, higiene, administração de medicações e manutenção de acessos venosos. Atualizava prontuários e prestava suporte em consultas, cirurgias, organização de materiais e rotina de banho e tosa.'
             }
         ];
 
