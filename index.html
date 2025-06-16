@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR" class="scroll-smooth">
 <head>
@@ -85,7 +86,7 @@
 
         .next-btn {
             position: absolute;
-            bottom: 3rem;
+            bottom: 3rem; /* Default for larger screens */
             left: 50%;
             transform: translateX(-50%);
             animation: bounce-float 2.5s infinite;
@@ -96,6 +97,13 @@
             color: white;
             border-color: white;
         }
+        /* Mobile specific adjustment for next-btn */
+        @media (max-width: 768px) { /* Adjust breakpoint as needed for mobile */
+            .next-btn {
+                bottom: 8rem; /* Higher position for mobile */
+            }
+        }
+
         @keyframes bounce-float {
             0%, 100% { transform: translate(-50%, 0); }
             50% { transform: translate(-50%, -10px); }
@@ -517,7 +525,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                 </button>
             </div>
-            <a id="exp-journey-next-section-btn" href="#exp-diversas" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400 sound-on-click" style="bottom: 8rem;">
+            <a id="exp-journey-next-section-btn" href="#exp-diversas" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400 sound-on-click">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </a>
         </section>
@@ -860,7 +868,6 @@
                     lastSoundTime = nextScheduledTime;
                 }
                 document.getElementById('info-pessoal').scrollIntoView({ behavior: 'smooth' });
-                // We do NOT call initTerminal() here, it will be called by contato-next-btn
             });
         }
 
