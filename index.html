@@ -44,6 +44,7 @@
             padding: 2rem;
             position: relative;
             width: 100vw;
+            box-sizing: border-box;
         }
 
         #particles-js {
@@ -97,6 +98,35 @@
         @keyframes draw-line {
             to { stroke-dashoffset: 0; }
         }
+        
+        /* Animação Seção Info Pessoal */
+        .info-scan-card {
+            background: rgba(10, 10, 26, 0.5);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .scanline {
+            position: absolute;
+            top: -10%; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-glow-color), transparent);
+            box-shadow: 0 0 10px var(--primary-glow-color);
+            animation: scan 4s ease-in-out infinite 1s;
+        }
+        @keyframes scan {
+            0% { top: -10%; }
+            100% { top: 110%; }
+        }
+        .info-scan-card .info-item {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .visible .info-item-1 { animation: fade-in 0.5s forwards 1s; }
+        .visible .info-item-2 { animation: fade-in 0.5s forwards 1.3s; }
+        .visible .info-item-3 { animation: fade-in 0.5s forwards 1.6s; }
+
 
         /* Animação Terminal */
         .terminal-window {
@@ -111,14 +141,22 @@
             width: 0;
             border-right: .1em solid var(--primary-glow-color);
             opacity: 0;
+            display: block; /* Garante que ocupe a linha toda */
+            font-size: clamp(0.65rem, 3.2vw, 0.9rem); /* Fonte responsiva - CORRIGIDO */
         }
         .visible .terminal-text { opacity: 1; }
-        .visible .terminal-line1 { animation: typing 2s steps(32, end) forwards, blink-caret .75s step-end 2s infinite; }
-        .visible .terminal-line2 { animation: typing 2.2s steps(35, end) forwards 2.5s, blink-caret .75s step-end 4.5s infinite; }
-        .visible .terminal-line3 { animation: typing 1.8s steps(23, end) forwards 5s, blink-caret .75s step-end 6.8s infinite; }
+        .visible .terminal-line1 { animation: typing 2s steps(32) forwards, blink-caret .75s step-end 2s infinite; }
+        .visible .terminal-line2 { animation: typing 2.5s steps(40) forwards 2.5s, blink-caret .75s step-end 4.75s infinite; }
+        .visible .terminal-line3 { animation: typing 1.8s steps(23) forwards 5s, blink-caret .75s step-end 6.8s infinite; }
 
-        @keyframes typing { from { width: 0 } to { width: 100%; border-right-color: var(--primary-glow-color); } }
-        @keyframes blink-caret { from, to { border-right-color: transparent } 50% { border-right-color: var(--primary-glow-color); } }
+        @keyframes typing { 
+            from { width: 0 } 
+            to { width: 100%; border-right-color: var(--primary-glow-color); } 
+        }
+        @keyframes blink-caret { 
+            from, to { border-right-color: transparent } 
+            50% { border-right-color: var(--primary-glow-color); } 
+        }
         
         .terminal-btn {
              font-family: var(--font-tech);
@@ -141,24 +179,10 @@
         <!-- Home -->
         <section id="home">
             <div class="reveal">
-                <h1 class="text-4xl md:text-5xl font-bold text-white uppercase tracking-widest" style="text-shadow: 0 0 10px var(--primary-glow-color);">Pedro Henrique Ramos Santos</h1>
+                <h1 class="text-4xl sm:text-5xl font-bold text-white uppercase tracking-widest" style="text-shadow: 0 0 10px var(--primary-glow-color);">Pedro Henrique Ramos Santos</h1>
             </div>
             <div class="reveal delay-1">
-                <p class="text-lg md:text-xl text-cyan-300 mt-2 max-w-lg">Minha jornada profissional, embora enraizada na paixão pela saúde animal, está se expandindo em direção ao vasto e promissor campo da tecnologia.</p>
-            </div>
-            <a href="#sobre-1" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-            </a>
-        </section>
-
-        <!-- Sobre 1: Localização -->
-        <section id="sobre-1" class="bg-black/20">
-            <div class="reveal p-8 rounded-lg bg-gray-900/50 border border-purple-500/50 w-full max-w-sm">
-                 <h2 class="text-2xl font-bold text-purple-300 mb-4">INFORMAÇÕES</h2>
-                 <p class="text-gray-300">Uberaba, Minas Gerais, Brasil</p>
-                 <p class="text-gray-300">28 anos, CNH-D</p>
-                 <p class="mt-4 text-sm text-cyan-300">(34) 98830-1561</p>
-                 <p class="text-sm text-cyan-300">pedrohenrique0601@edu.uniube.br</p>
+                <p class="text-lg sm:text-xl text-cyan-300 mt-2 max-w-lg">Minha jornada profissional, embora enraizada na paixão pela saúde animal, está se expandindo em direção ao vasto e promissor campo da tecnologia.</p>
             </div>
             <a href="#sobre-2" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
@@ -193,8 +217,11 @@
 
         <!-- Sobre 4: Perfil -->
         <section id="sobre-4">
-            <h2 class="reveal text-3xl font-bold text-cyan-400 mb-4">PERFIL</h2>
-            <p class="reveal delay-1 max-w-md text-lg text-gray-300">Proativo, com excelente capacidade de aprendizado e habilidades interpessoais, garanto uma colaboração eficaz em equipes multidisciplinares, essenciais para projetos que unem ciência e tecnologia.</p>
+             <div class="reveal">
+                <img src="https://placehold.co/200x200/0a0a1a/e0e0e0?text=PH" alt="Foto de Pedro Henrique" class="rounded-full w-32 h-32 mb-6 border-2 border-cyan-400/50 shadow-lg shadow-cyan-500/20">
+            </div>
+            <h2 class="reveal delay-1 text-3xl font-bold text-cyan-400 mb-4">PERFIL</h2>
+            <p class="reveal delay-2 max-w-md text-lg text-gray-300">Proativo, com excelente capacidade de aprendizado e habilidades interpessoais, garanto uma colaboração eficaz em equipes multidisciplinares, essenciais para projetos que unem ciência e tecnologia.</p>
             <a href="#objetivo" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </a>
@@ -232,12 +259,11 @@
 
         <!-- Experiência 1 -->
         <section id="exp-1" class="bg-black/20">
-            <h2 class="reveal text-3xl font-bold text-cyan-400 mb-2">EXPERIÊNCIA</h2>
-            <h3 class="reveal text-lg font-semibold text-gray-400 mb-4">(na área da Medicina Veterinária)</h3>
+            <h2 class="reveal text-3xl font-bold text-cyan-400 mb-4">JORNADA NA MEDICINA VETERINÁRIA</h2>
             <div class="reveal delay-1 p-8 rounded-lg bg-gray-900/50 border border-purple-500/50 w-full max-w-sm">
                 <h3 class="text-xl font-bold text-purple-300">Auxiliar de Veterinário</h3>
                 <p class="text-sm text-gray-400 mb-3">Clínica Amisvet | 2023 - 2024</p>
-                <p class="text-gray-300">Gestão de rotinas de internação (SimplesVet), administração de medicações e auxílio em procedimentos clínicos e cirúrgicos.</p>
+                <p class="text-gray-300 text-base">Atuei na linha de frente do cuidado animal e como elo vital na gestão da informação, utilizando o sistema SimplesVet e aplicando rigor em cada etapa.</p>
             </div>
              <a href="#exp-2" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
@@ -246,12 +272,11 @@
 
         <!-- Experiência 2 -->
         <section id="exp-2">
-            <h2 class="reveal text-3xl font-bold text-cyan-400 mb-2">EXPERIÊNCIA</h2>
-            <h3 class="reveal text-lg font-semibold text-gray-400 mb-4">(na área da Medicina Veterinária)</h3>
+            <h2 class="reveal text-3xl font-bold text-cyan-400 mb-4">JORNADA NA MEDICINA VETERINÁRIA</h2>
             <div class="reveal delay-1 p-8 rounded-lg bg-gray-900/50 border border-purple-500/50 w-full max-w-sm">
                 <h3 class="text-xl font-bold text-purple-300">Monitor de Clínica Médica</h3>
                 <p class="text-sm text-gray-400 mb-3">Faculdade Patos de Minas | 2021 - 2022</p>
-                <p class="text-gray-300">Suporte a alunos e professores, organização e esterilização de materiais, e controle de estoque do centro cirúrgico.</p>
+                <p class="text-gray-300 text-base">Como monitor, desenvolvi uma visão estratégica sobre eficiência operacional, otimizando o fluxo de trabalho e garantindo precisão em cálculos e controle de estoque.</p>
             </div>
              <a href="#exp-3" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
@@ -260,12 +285,11 @@
 
         <!-- Experiência 3 -->
         <section id="exp-3" class="bg-black/20">
-            <h2 class="reveal text-3xl font-bold text-cyan-400 mb-2">EXPERIÊNCIA</h2>
-            <h3 class="reveal text-lg font-semibold text-gray-400 mb-4">(na área da Medicina Veterinária)</h3>
+            <h2 class="reveal text-3xl font-bold text-cyan-400 mb-4">JORNADA NA MEDICINA VETERINÁRIA</h2>
             <div class="reveal delay-1 p-8 rounded-lg bg-gray-900/50 border border-purple-500/50 w-full max-w-sm">
                 <h3 class="text-xl font-bold text-purple-300">Estagiário</h3>
                 <p class="text-sm text-gray-400 mb-3">Clínica Veterinária Animale | 2020 - 2023</p>
-                <p class="text-gray-300">Cuidados a pacientes, administração de medicamentos, suporte a consultas e otimização de processos.</p>
+                <p class="text-gray-300 text-base">Imersão profunda no cotidiano veterinário, solidificando minha compreensão sobre a importância da integridade e da acessibilidade dos dados para o diagnóstico e tratamento.</p>
             </div>
              <a href="#exp-diversas" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
@@ -343,21 +367,46 @@
                     <p class="text-green-300">Curso UDE | 30h</p>
                 </div>
             </div>
-             <a href="#contato" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
+             <a href="#info-pessoal" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </a>
+        </section>
+
+        <!-- Informações Pessoais -->
+        <section id="info-pessoal">
+            <div class="w-full max-w-sm p-6 rounded-lg info-scan-card">
+                 <div class="scanline"></div>
+                <div class="text-left space-y-4">
+                    <h2 class="reveal text-2xl font-bold text-purple-300 mb-4">INFORMAÇÕES PESSOAIS</h2>
+                    <div class="info-item info-item-1">
+                        <span class="font-bold text-cyan-300">Localização:</span>
+                        <span class="text-gray-300 block">Uberaba, Minas Gerais, Brasil</span>
+                    </div>
+                    <div class="info-item info-item-2">
+                        <span class="font-bold text-cyan-300">Idade:</span>
+                        <span class="text-gray-300 block">28 anos</span>
+                    </div>
+                     <div class="info-item info-item-3">
+                        <span class="font-bold text-cyan-300">Habilitação:</span>
+                        <span class="text-gray-300 block">CNH-D</span>
+                    </div>
+                </div>
+            </div>
+            <a href="#contato" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </a>
         </section>
 
         <!-- Final: Contato -->
         <section id="contato">
-            <div class="p-6 rounded-lg bg-black/50 w-full max-w-md terminal-window reveal">
+            <div class="p-6 rounded-lg bg-black/50 w-full max-w-sm sm:max-w-md terminal-window reveal">
                 <div>
                     <p class="terminal-text terminal-line1 text-green-400 text-left">> STATUS: PRONTO PARA CONEXÃO</p>
-                    <p class="terminal-text terminal-line2 text-green-400 text-left">> OBJETIVO: INOVAR. COLABORAR. CRESCER.</p>
+                    <p class="terminal-text terminal-line2 text-green-400 text-left">> OBJETIVO: INOVAR.COLABORAR.CRESCER.</p>
                     <p class="terminal-text terminal-line3 text-green-400 text-left">> AGUARDANDO COMANDO...</p>
                 </div>
                 <div class="mt-8">
-                    <a href="mailto:pedrohenrique0601@edu.uniube.br" class="terminal-btn block w-full p-4 border border-cyan-400 text-cyan-400">
+                    <a href="https://wa.me/553498831561" target="_blank" class="terminal-btn block w-full p-4 border border-cyan-400 text-cyan-400">
                         INICIAR CONEXÃO_
                     </a>
                 </div>
