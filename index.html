@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR" class="scroll-smooth">
 <head>
@@ -100,7 +99,12 @@
         /* Mobile specific adjustment for next-btn */
         @media (max-width: 768px) { /* Adjust breakpoint as needed for mobile */
             .next-btn {
-                bottom: 8rem; /* Higher position for mobile */
+                bottom: 8rem; /* Higher position for most mobile sections */
+            }
+            /* Specific adjustment for 'Perfil Híbrido' and 'Formação Acadêmica' */
+            #sobre-4 .next-btn,
+            #formacao .next-btn {
+                bottom: 6rem; /* Slightly lower position for these sections on mobile */
             }
         }
 
@@ -695,7 +699,6 @@
         }
 
         // Ensure the page starts at the very top (Welcome section) for consistent behavior across devices.
-        // This is primarily for initial load, not for navigation within the site.
         setTimeout(() => {
             const welcomeSection = document.getElementById('welcome');
             if (welcomeSection) {
@@ -822,8 +825,12 @@
             if (terminalInitialized || !terminalInput) return;
             terminalInitialized = true;
             terminalInput.focus();
-            typeToTerminal("Terminal de Contato Ativo...\nDigite 'help' para ver os comandos.", () => {
-                terminalInput.focus();
+            // Automatically type 'help' and process it
+            typeToTerminal("Terminal de Contato Ativo...", () => {
+                typeToTerminal("> help", () => { // Simulate typing '> help'
+                    processCommand('help'); // Then execute the help command
+                    terminalInput.focus();
+                }, 50); // Slightly faster typing for automated command
             });
         }
 
