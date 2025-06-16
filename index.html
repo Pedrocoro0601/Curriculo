@@ -680,8 +680,14 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Ensure the page starts at the very top for consistent behavior across devices
-        window.scrollTo(0, 0);
+        // Ensure the page starts at the very top (Welcome section) for consistent behavior across devices.
+        // Using a slight delay and scrollIntoView is more robust for scroll-snap and mobile browsers.
+        setTimeout(() => {
+            const welcomeSection = document.getElementById('welcome');
+            if (welcomeSection) {
+                welcomeSection.scrollIntoView({ behavior: 'instant' });
+            }
+        }, 100); // Small delay to ensure elements are rendered
 
         let soundEnabled = false;
         const synth = new Tone.Synth().toDestination();
