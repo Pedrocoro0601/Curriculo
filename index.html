@@ -517,7 +517,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                 </button>
             </div>
-            <a id="exp-journey-next-section-btn" href="#exp-diversas" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400 sound-on-click" style="bottom: 6rem;">
+            <a id="exp-journey-next-section-btn" href="#exp-diversas" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400 sound-on-click" style="bottom: 8rem;">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </a>
         </section>
@@ -680,6 +680,8 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Ensure the page starts at the very top for consistent behavior across devices
+        window.scrollTo(0, 0);
 
         let soundEnabled = false;
         const synth = new Tone.Synth().toDestination();
