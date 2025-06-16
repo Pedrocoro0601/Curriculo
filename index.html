@@ -680,6 +680,12 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Clear any existing hash in the URL to prevent the browser from
+        // automatically scrolling to a specific section on page load.
+        if (window.location.hash) {
+            window.location.hash = '';
+        }
+
         // Ensure the page starts at the very top (Welcome section) for consistent behavior across devices.
         // Using a slight delay and scrollIntoView is more robust for scroll-snap and mobile browsers.
         setTimeout(() => {
@@ -687,7 +693,7 @@
             if (welcomeSection) {
                 welcomeSection.scrollIntoView({ behavior: 'instant' });
             }
-        }, 100); // Small delay to ensure elements are rendered
+        }, 200); // Increased delay to 200ms to give the browser more time to render
 
         let soundEnabled = false;
         const synth = new Tone.Synth().toDestination();
@@ -798,7 +804,7 @@
         const startConnectionBtn = document.getElementById('start-connection-btn');
         let terminalInitialized = false;
 
-        // Updated help text with initial messages
+        // Updated help text content without the command list
         const helpTextContent = `STATUS: PRONTO PARA CONEXÃO\nOBJETIVO: INOVAR.COLABORAR.CRESCER.\nAGUARDANDO COMANDO...`;
         
         // Function to type text character by character into the terminal output
@@ -826,7 +832,7 @@
             terminalInitialized = true;
             terminalInput.focus();
             typeToTerminal("Terminal de Contato Ativo...\nDigite 'help' para ver os comandos.", () => {
-                // Do not show button here
+                // Do not show button here initially
                 terminalInput.focus();
             });
         }
@@ -864,7 +870,7 @@
             switch (command) {
                 case 'help':
                     typeToTerminal(helpTextContent, () => {
-                        startConnectionBtn.style.display = 'block'; // Show button after 'help'
+                        startConnectionBtn.style.display = 'block'; // Show button after 'help' command is displayed
                     });
                     break;
                 case 'contact':
