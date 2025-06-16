@@ -33,7 +33,6 @@
              scroll-snap-type: y mandatory;
         }
 
-        /* Cada seção ocupa a tela inteira */
         section {
             scroll-snap-align: start;
             min-height: 100vh;
@@ -47,7 +46,6 @@
             width: 100vw;
         }
 
-        /* Partículas de fundo */
         #particles-js {
             position: fixed;
             width: 100%;
@@ -57,7 +55,6 @@
             z-index: -1;
         }
 
-        /* Animações de entrada */
         .reveal {
             opacity: 0;
             transform: translateY(50px);
@@ -70,7 +67,6 @@
         .reveal.delay-1 { transition-delay: 0.2s; }
         .reveal.delay-2 { transition-delay: 0.4s; }
         
-        /* Animação do botão flutuante */
         .next-btn {
             position: absolute;
             bottom: 2rem;
@@ -84,32 +80,20 @@
             50% { transform: translate(-50%, -10px) scale(1.1); }
         }
 
-        /* Animação EKG */
-        .ekg-line {
-            width: 80px;
-            height: 40px;
-            stroke: var(--primary-glow-color);
-            stroke-width: 2;
-            fill: none;
-            stroke-dasharray: 500;
-            stroke-dashoffset: 500;
-        }
-        .visible .ekg-line {
-            animation: draw-line 2s ease-out forwards;
-        }
-        
-        /* Animação Circuito */
-        .circuit-board {
-            stroke: var(--secondary-glow-color);
-            stroke-width: 1;
-            fill: none;
+        /* Animações SVG */
+        .ekg-line, .circuit-board, .gears-svg path {
             stroke-dasharray: 1000;
             stroke-dashoffset: 1000;
+            animation: draw-line 2.5s ease-out forwards;
         }
-       .visible .circuit-board {
-            animation: draw-line 2.5s ease-out forwards 0.5s;
-        }
+        .visible .ekg-line { animation-delay: 0.2s; }
+        .visible .circuit-board { animation-delay: 0.2s; }
+        .visible .gears-svg path { animation-delay: 0.2s; }
         
+        .gear-1 { animation: spin 10s linear infinite; transform-origin: center; }
+        .gear-2 { animation: spin 15s linear infinite reverse; transform-origin: center; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
         @keyframes draw-line {
             to { stroke-dashoffset: 0; }
         }
@@ -126,14 +110,16 @@
             overflow: hidden;
             width: 0;
             border-right: .1em solid var(--primary-glow-color);
+            opacity: 0;
         }
-        .visible .terminal-line1 { animation: typing 2s steps(32, end) forwards, blink-caret .75s step-end infinite; }
-        .visible .terminal-line2 { animation: typing 2s steps(35, end) forwards 2s, blink-caret .75s step-end infinite 2s; }
-        .visible .terminal-line3 { animation: typing 2s steps(23, end) forwards 4s, blink-caret .75s step-end infinite 4s; }
+        .visible .terminal-text { opacity: 1; }
+        .visible .terminal-line1 { animation: typing 2s steps(32, end) forwards, blink-caret .75s step-end 2s infinite; }
+        .visible .terminal-line2 { animation: typing 2.2s steps(35, end) forwards 2.5s, blink-caret .75s step-end 4.5s infinite; }
+        .visible .terminal-line3 { animation: typing 1.8s steps(23, end) forwards 5s, blink-caret .75s step-end 6.8s infinite; }
 
-        @keyframes typing { from { width: 0 } to { width: 100%; } }
+        @keyframes typing { from { width: 0 } to { width: 100%; border-right-color: var(--primary-glow-color); } }
         @keyframes blink-caret { from, to { border-right-color: transparent } 50% { border-right-color: var(--primary-glow-color); } }
-
+        
         .terminal-btn {
              font-family: var(--font-tech);
              letter-spacing: 0.2em;
@@ -141,7 +127,7 @@
              opacity: 0;
         }
          .visible .terminal-btn {
-             animation: fade-in 1s ease-in forwards 6s;
+             animation: fade-in 1s ease-in forwards 7s;
          }
         @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 
@@ -158,7 +144,7 @@
                 <h1 class="text-4xl md:text-5xl font-bold text-white uppercase tracking-widest" style="text-shadow: 0 0 10px var(--primary-glow-color);">Pedro Henrique Ramos Santos</h1>
             </div>
             <div class="reveal delay-1">
-                <p class="text-lg md:text-xl text-cyan-300 mt-2">Minha jornada profissional, embora enraizada na paixão pela saúde animal, está se expandindo em direção ao vasto e promissor campo da tecnologia.</p>
+                <p class="text-lg md:text-xl text-cyan-300 mt-2 max-w-lg">Minha jornada profissional, embora enraizada na paixão pela saúde animal, está se expandindo em direção ao vasto e promissor campo da tecnologia.</p>
             </div>
             <a href="#sobre-1" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
@@ -182,7 +168,7 @@
         <!-- Sobre 2: Transição VET -->
         <section id="sobre-2">
             <div class="reveal">
-                <svg viewBox="0 0 100 50" class="ekg-line mb-4"><polyline points="0,25 15,25 20,10 25,40 30,25 35,25 40,20 45,30 50,25 100,25" /></svg>
+                <svg viewBox="0 0 100 50" class="w-24 h-12 mb-4"><polyline class="ekg-line" points="0,25 15,25 20,10 25,40 30,25 35,25 40,20 45,30 50,25 100,25" style="stroke: var(--primary-glow-color); stroke-width: 2; fill: none;"/></svg>
             </div>
             <h2 class="reveal delay-1 text-3xl font-bold text-cyan-400 mb-4">DA CLÍNICA À BIOTECNOLOGIA</h2>
             <p class="reveal delay-2 max-w-md text-lg text-gray-300">Médico Veterinário formado, minha paixão me impulsionou para além da clínica, direcionando-me para as biotecnologias da reprodução, onde a tecnologia otimiza processos e resultados.</p>
@@ -195,7 +181,7 @@
         <section id="sobre-3" class="bg-black/20">
              <div class="reveal">
                  <svg viewBox="0 0 100 100" class="w-24 h-24 mb-4">
-                     <path class="circuit-board" d="M 10 10 L 30 10 L 30 30 L 10 30 L 10 50 L 50 50 L 50 10 M 70 10 L 90 10 L 90 50 L 70 50 L 70 70 L 90 70 M 10 70 L 50 70 L 50 90 L 10 90 M 70 90 L 90 90" />
+                     <path class="circuit-board" d="M 10 10 L 30 10 L 30 30 L 10 30 L 10 50 L 50 50 L 50 10 M 70 10 L 90 10 L 90 50 L 70 50 L 70 70 L 90 70 M 10 70 L 50 70 L 50 90 L 10 90 M 70 90 L 90 90" style="stroke: var(--secondary-glow-color); stroke-width: 1; fill: none;" />
                  </svg>
             </div>
             <h2 class="reveal delay-1 text-3xl font-bold text-cyan-400 mb-4">INTEGRANDO A TECNOLOGIA</h2>
@@ -232,12 +218,12 @@
             <div class="reveal delay-1 p-6 rounded-lg bg-gray-900/50 border border-purple-500/50 w-full max-w-sm mb-6">
                 <p class="text-4xl mb-2">🎓</p>
                 <h3 class="text-xl font-bold">Medicina Veterinária</h3>
-                <p class="text-purple-300">Faculdade Patos de Minas | 2024</p>
+                <p class="text-purple-300">Faculdade Patos de Minas | Concluído em 2024</p>
             </div>
             <div class="reveal delay-2 p-6 rounded-lg bg-gray-900/50 border border-green-500/50 w-full max-w-sm">
                 <p class="text-4xl mb-2">🚀</p>
                 <h3 class="text-xl font-bold">Sistemas de Informação</h3>
-                <p class="text-green-300">Universidade de Uberaba | 2029</p>
+                <p class="text-green-300">Universidade de Uberaba | Cursando - 1º Período</p>
             </div>
             <a href="#exp-1" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
@@ -246,7 +232,8 @@
 
         <!-- Experiência 1 -->
         <section id="exp-1" class="bg-black/20">
-            <h2 class="reveal text-2xl font-bold text-cyan-400 mb-4">EXPERIÊNCIA</h2>
+            <h2 class="reveal text-3xl font-bold text-cyan-400 mb-2">EXPERIÊNCIA</h2>
+            <h3 class="reveal text-lg font-semibold text-gray-400 mb-4">(na área da Medicina Veterinária)</h3>
             <div class="reveal delay-1 p-8 rounded-lg bg-gray-900/50 border border-purple-500/50 w-full max-w-sm">
                 <h3 class="text-xl font-bold text-purple-300">Auxiliar de Veterinário</h3>
                 <p class="text-sm text-gray-400 mb-3">Clínica Amisvet | 2023 - 2024</p>
@@ -259,7 +246,8 @@
 
         <!-- Experiência 2 -->
         <section id="exp-2">
-            <h2 class="reveal text-2xl font-bold text-cyan-400 mb-4">EXPERIÊNCIA</h2>
+            <h2 class="reveal text-3xl font-bold text-cyan-400 mb-2">EXPERIÊNCIA</h2>
+            <h3 class="reveal text-lg font-semibold text-gray-400 mb-4">(na área da Medicina Veterinária)</h3>
             <div class="reveal delay-1 p-8 rounded-lg bg-gray-900/50 border border-purple-500/50 w-full max-w-sm">
                 <h3 class="text-xl font-bold text-purple-300">Monitor de Clínica Médica</h3>
                 <p class="text-sm text-gray-400 mb-3">Faculdade Patos de Minas | 2021 - 2022</p>
@@ -272,29 +260,46 @@
 
         <!-- Experiência 3 -->
         <section id="exp-3" class="bg-black/20">
-             <h2 class="reveal text-2xl font-bold text-cyan-400 mb-4">EXPERIÊNCIA</h2>
+            <h2 class="reveal text-3xl font-bold text-cyan-400 mb-2">EXPERIÊNCIA</h2>
+            <h3 class="reveal text-lg font-semibold text-gray-400 mb-4">(na área da Medicina Veterinária)</h3>
             <div class="reveal delay-1 p-8 rounded-lg bg-gray-900/50 border border-purple-500/50 w-full max-w-sm">
                 <h3 class="text-xl font-bold text-purple-300">Estagiário</h3>
                 <p class="text-sm text-gray-400 mb-3">Clínica Veterinária Animale | 2020 - 2023</p>
                 <p class="text-gray-300">Cuidados a pacientes, administração de medicamentos, suporte a consultas e otimização de processos.</p>
             </div>
-             <a href="#comp-1" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
+             <a href="#exp-diversas" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </a>
         </section>
 
+        <!-- Experiências Diversas -->
+        <section id="exp-diversas">
+            <div class="reveal">
+                <svg class="w-24 h-24 mb-4 gears-svg" viewBox="0 0 100 100">
+                    <path class="gear-1" fill="none" stroke="var(--primary-glow-color)" stroke-width="2" d="M 50 10 A 40 40 0 0 1 50 90 A 40 40 0 0 1 50 10 Z M 50 20 L 50 0 M 50 100 L 50 80 M 10 50 L 30 50 M 90 50 L 70 50 M 21.7 21.7 L 35.8 35.8 M 78.3 78.3 L 64.2 64.2 M 21.7 78.3 L 35.8 64.2 M 78.3 21.7 L 64.2 35.8" />
+                    <path class="gear-2" fill="none" stroke="var(--secondary-glow-color)" stroke-width="2" d="M 80 30 A 15 15 0 0 1 80 60 A 15 15 0 0 1 80 30 Z M 80 20 L 80 15 M 80 70 L 80 65 M 68.9 45 L 65 45 M 91.1 45 L 95 45" />
+                </svg>
+            </div>
+            <h2 class="reveal delay-1 text-3xl font-bold text-cyan-400 mb-4">EXPERIÊNCIAS DIVERSAS</h2>
+            <p class="reveal delay-2 max-w-md text-lg text-gray-300">Minha trajetória como frentista, operador de caixa e motorista de caminhão foi crucial para moldar um profissional proativo e adaptável, com uma base sólida em responsabilidade, planejamento e resolução de problemas.</p>
+            <a href="#comp-1" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </a>
+        </section>
+
+
         <!-- Competência 1 -->
-        <section id="comp-1">
+        <section id="comp-1" class="bg-black/20">
             <p class="reveal text-5xl mb-4">🧬</p>
             <h2 class="reveal delay-1 text-2xl font-bold text-green-300 mb-4">Biotecnologia da Reprodução</h2>
-            <p class="reveal delay-2 max-w-sm text-lg text-gray-300">Conhecimento em FIV/PIVE e seleção de oócitos (Curso UDE), buscando otimizar processos com IA e análise de imagem.</p>
+            <p class="reveal delay-2 max-w-sm text-lg text-gray-300">Conhecimento em FIV/PIVE e seleção de oócitos, buscando otimizar processos com IA e análise de imagem.</p>
             <a href="#comp-2" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </a>
         </section>
 
         <!-- Competência 2 -->
-        <section id="comp-2" class="bg-black/20">
+        <section id="comp-2">
             <p class="reveal text-5xl mb-4">💡</p>
             <h2 class="reveal delay-1 text-2xl font-bold text-green-300 mb-4">Tecnologia e Sistemas</h2>
             <p class="reveal delay-2 max-w-sm text-lg text-gray-300">Proficiência em Pacote Office, com foco em Excel para análise de dados e modelagem, essencial para parâmetros reprodutivos.</p>
@@ -304,7 +309,7 @@
         </section>
 
         <!-- Competência 3 -->
-        <section id="comp-3">
+        <section id="comp-3" class="bg-black/20">
             <p class="reveal text-5xl mb-4">🤝</p>
             <h2 class="reveal delay-1 text-2xl font-bold text-green-300 mb-4">Comunicação e Equipe</h2>
             <p class="reveal delay-2 max-w-sm text-lg text-gray-300">Comunicação eficaz para unir veterinários, biotecnologistas e desenvolvedores, garantindo que soluções atendam às necessidades reais do campo.</p>
@@ -314,22 +319,29 @@
         </section>
         
         <!-- Competência 4 -->
-        <section id="comp-4" class="bg-black/20">
+        <section id="comp-4">
             <p class="reveal text-5xl mb-4">🚀</p>
-            <h2 class="reveal delay-1 text-2xl font-bold text-green-300 mb-4">Experiências Diversas</h2>
-            <p class="reveal delay-2 max-w-sm text-lg text-gray-300">Habilidades de responsabilidade e adaptação fortalecidas em funções como frentista, operador de caixa e motorista de caminhão.</p>
-             <a href="#cursos" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
+            <h2 class="reveal delay-1 text-2xl font-bold text-green-300 mb-4">Proatividade e Aprendizado</h2>
+            <p class="reveal delay-2 max-w-sm text-lg text-gray-300">Iniciativa para buscar novos conhecimentos e rápida adaptação a diferentes ambientes e desafios.</p>
+             <a href="#adicionais" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </a>
         </section>
 
-         <!-- Cursos -->
-        <section id="cursos">
+         <!-- Informações Adicionais -->
+        <section id="adicionais" class="bg-black/20">
             <h2 class="reveal text-3xl font-bold text-cyan-400 mb-8">INFORMAÇÕES ADICIONAIS</h2>
-            <div class="reveal delay-1 p-6 rounded-lg bg-gray-900/50 border border-green-500/50 w-full max-w-sm">
-                <p class="text-4xl mb-2">👨‍💻</p>
-                <h3 class="text-xl font-bold">Curso de Programação WEB</h3>
-                <p class="text-green-300">Senac Minas | 240h</p>
+            <div class="w-full max-w-sm space-y-6">
+                <div class="reveal delay-1 p-6 rounded-lg bg-gray-900/50 border border-green-500/50">
+                    <p class="text-4xl mb-2">👨‍💻</p>
+                    <h3 class="text-xl font-bold">Curso de Programação WEB</h3>
+                    <p class="text-green-300">Senac Minas | 240h</p>
+                </div>
+                <div class="reveal delay-2 p-6 rounded-lg bg-gray-900/50 border border-green-500/50">
+                    <p class="text-4xl mb-2">🔬</p>
+                    <h3 class="text-xl font-bold">Universo do Embrião</h3>
+                    <p class="text-green-300">Curso UDE | 30h</p>
+                </div>
             </div>
              <a href="#contato" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
@@ -337,9 +349,9 @@
         </section>
 
         <!-- Final: Contato -->
-        <section id="contato" class="bg-black/30">
-            <div class="p-6 rounded-lg bg-black/50 w-full max-w-md terminal-window">
-                <div class="reveal">
+        <section id="contato">
+            <div class="p-6 rounded-lg bg-black/50 w-full max-w-md terminal-window reveal">
+                <div>
                     <p class="terminal-text terminal-line1 text-green-400 text-left">> STATUS: PRONTO PARA CONEXÃO</p>
                     <p class="terminal-text terminal-line2 text-green-400 text-left">> OBJETIVO: INOVAR. COLABORAR. CRESCER.</p>
                     <p class="terminal-text terminal-line3 text-green-400 text-left">> AGUARDANDO COMANDO...</p>
@@ -367,6 +379,7 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         // Revela a seção inteira
+                        entry.target.classList.add('visible');
                         entry.target.querySelectorAll('.reveal').forEach(el => {
                             el.classList.add('visible');
                         });
