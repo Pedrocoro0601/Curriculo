@@ -17,9 +17,9 @@
             --font-tech: 'Space Mono', monospace;
         }
 
-        html {
-            scroll-snap-type: y mandatory;
-        }
+        /* The scroll-snap-type property was removed from the html element. 
+           The <main> tag is the primary scrolling container, so defining scroll-snap there
+           is correct and prevents conflicting browser behaviors, especially on mobile. */
 
         body {
             background-color: var(--bg-color);
@@ -680,12 +680,6 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Clear any existing hash in the URL to prevent the browser from
-        // automatically scrolling to a specific section on page load.
-        if (window.location.hash) {
-            window.location.hash = '';
-        }
-
         // Ensure the page starts at the very top (Welcome section) for consistent behavior across devices.
         // Using a slight delay and scrollIntoView is more robust for scroll-snap and mobile browsers.
         setTimeout(() => {
@@ -693,7 +687,7 @@
             if (welcomeSection) {
                 welcomeSection.scrollIntoView({ behavior: 'instant' });
             }
-        }, 200); // Increased delay to 200ms to give the browser more time to render
+        }, 100); // Small delay to ensure elements are rendered
 
         let soundEnabled = false;
         const synth = new Tone.Synth().toDestination();
@@ -804,8 +798,8 @@
         const startConnectionBtn = document.getElementById('start-connection-btn');
         let terminalInitialized = false;
 
-        // Updated help text content without the command list
-        const helpTextContent = `STATUS: PRONTO PARA CONEXÃO\nOBJETIVO: INOVAR.COLABORAR.CRESCER.\nAGUARDANDO COMANDO...`;
+        // Updated help text with initial messages
+        const helpTextContent = `STATUS: PRONTO PARA CONEXÃO\nOBJETIVO: INOVAR.COLABORAR.CRESCER.\nCOMANDOS:\n- contact  : Exibe informações de contato.\n- socials  : Mostra perfis sociais.\n- clear    : Limpa o terminal.\n- exit     : Encerra a sessão.`;
         
         // Function to type text character by character into the terminal output
         function typeToTerminal(text, callback, speed = 20) {
@@ -832,7 +826,6 @@
             terminalInitialized = true;
             terminalInput.focus();
             typeToTerminal("Terminal de Contato Ativo...\nDigite 'help' para ver os comandos.", () => {
-                // Do not show button here initially
                 terminalInput.focus();
             });
         }
@@ -860,38 +853,35 @@
                 pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
                 lastSoundTime = nextScheduledTime;
             }
-            // Replace '#' with your actual local link
-            window.location.href = '#'; 
+            // Replace with your actual links
+             window.open('https://www.linkedin.com/in/pedro-h-r-s', '_blank');
+             window.open('https://wa.me/553498831561', '_blank');
         });
 
 
         // Function to process terminal commands
         function processCommand(command) {
+            startConnectionBtn.style.display = 'none'; // Hide by default
             switch (command) {
                 case 'help':
                     typeToTerminal(helpTextContent, () => {
-                        startConnectionBtn.style.display = 'block'; // Show button after 'help' command is displayed
+                        startConnectionBtn.style.display = 'block'; // Show button after 'help'
                     });
                     break;
                 case 'contact':
-                    typeToTerminal("Iniciando conexão segura...\n- WhatsApp: <a href='https://wa.me/553498831561' target='_blank' class='text-white underline hover:text-green-300'>+55 34 99883-1561</a>\n- Email: <a href='mailto:pedro.hrs@hotmail.com' class='text-white underline hover:text-green-300'>pedro.hrs@hotmail.com</a>");
-                    startConnectionBtn.style.display = 'none'; // Hide button for other commands
+                    typeToTerminal("Iniciando conexão segura...\n- WhatsApp: <a href='https://wa.me/5534998831561' target='_blank' class='text-white underline hover:text-green-300'>+55 34 99883-1561</a>\n- Email: <a href='mailto:pedro.hrs@hotmail.com' class='text-white underline hover:text-green-300'>pedro.hrs@hotmail.com</a>");
                     break;
                 case 'socials':
-                    typeToTerminal("Acessando perfis...\n- LinkedIn: <a href='#' class='text-white underline hover:text-green-300'>/in/pedro-h-r-s</a>\n- GitHub: <a href='#' class='text-white underline hover:text-green-300'>/pedrohrs-dev</a>");
-                    startConnectionBtn.style.display = 'none'; // Hide button for other commands
+                    typeToTerminal("Acessando perfis...\n- LinkedIn: <a href='https://www.linkedin.com/in/pedro-h-r-s' target='_blank' class='text-white underline hover:text-green-300'>/in/pedro-h-r-s</a>\n- GitHub: <a href='https://github.com/pedrohrs-dev' target='_blank' class='text-white underline hover:text-green-300'>/pedrohrs-dev</a>");
                     break;
                 case 'clear':
                     terminalOutput.innerHTML = '';
-                    startConnectionBtn.style.display = 'none'; // Hide button after clear
                     break;
                 case 'exit':
                     typeToTerminal("Conexão encerrada.");
-                    startConnectionBtn.style.display = 'none'; // Hide button for other commands
                     break;
                 default:
                     typeToTerminal(`Comando não reconhecido: '${command}'. Digite 'help'.`);
-                    startConnectionBtn.style.display = 'none'; // Hide button for unknown commands
             }
         }
 
@@ -936,8 +926,11 @@
             `;
             // Add 'visible' class after a short delay to trigger transition
             setTimeout(() => {
-                experienceCardContainer.querySelector('.terminal-card').classList.add('visible');
-            }, 100);
+                const card = experienceCardContainer.querySelector('.terminal-card');
+                if (card) {
+                    card.classList.add('visible');
+                }
+            }, 50);
         }
 
         // Function to show a specific experience by index
@@ -964,39 +957,39 @@
             if (currentExperienceIndex === experiences.length - 1) {
                 nextExperienceBtn.classList.add('opacity-50', 'cursor-not-allowed');
                 nextExperienceBtn.disabled = true;
-                expJourneyNextSectionBtn.classList.remove('hidden'); // Show scroll down button
+                expJourneyNextSectionBtn.style.display = 'block'; // Use block/none for visibility
             } else {
                 nextExperienceBtn.classList.remove('opacity-50', 'cursor-not-allowed');
                 nextExperienceBtn.disabled = false;
-                expJourneyNextSectionBtn.classList.add('hidden'); // Hide scroll down button
+                expJourneyNextSectionBtn.style.display = 'none'; // Hide scroll down button
             }
         }
+        
+        // Initial setup for experience navigation
+        if (expJourneyNextSectionBtn) expJourneyNextSectionBtn.style.display = 'none';
 
         // Event listeners for experience navigation buttons
-        prevExperienceBtn.addEventListener('click', () => {
-            if (soundEnabled) {
-                const now = Tone.context.currentTime;
-                const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
-                pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
-                lastSoundTime = nextScheduledTime;
-            }
-            if (currentExperienceIndex > 0) {
-                showExperience(currentExperienceIndex - 1);
-            }
-        });
+        if (prevExperienceBtn) {
+            prevExperienceBtn.addEventListener('click', () => {
+                if (soundEnabled) {
+                    pluckSynth.triggerAttackRelease('C4', '8n', Tone.now());
+                }
+                if (currentExperienceIndex > 0) {
+                    showExperience(currentExperienceIndex - 1);
+                }
+            });
+        }
 
-        nextExperienceBtn.addEventListener('click', () => {
-            if (soundEnabled) {
-                const now = Tone.context.currentTime;
-                const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
-                pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
-                lastSoundTime = nextScheduledTime;
-            }
-            if (currentExperienceIndex < experiences.length - 1) {
-                showExperience(currentExperienceIndex + 1);
-            }
-        });
-
+        if (nextExperienceBtn) {
+            nextExperienceBtn.addEventListener('click', () => {
+                if (soundEnabled) {
+                    pluckSynth.triggerAttackRelease('C4', '8n', Tone.now());
+                }
+                if (currentExperienceIndex < experiences.length - 1) {
+                    showExperience(currentExperienceIndex + 1);
+                }
+            });
+        }
     });
     </script>
 </body>
