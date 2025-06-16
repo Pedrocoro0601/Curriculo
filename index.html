@@ -12,6 +12,7 @@
         :root {
             --primary-glow-color: rgba(0, 255, 255, 0.7);
             --secondary-glow-color: rgba(191, 0, 255, 0.7);
+            --radioactive-green: #39ff14;
             --bg-color: #0a0a1a;
             --font-tech: 'Space Mono', monospace;
         }
@@ -142,7 +143,7 @@
             border-right: .1em solid var(--primary-glow-color);
             opacity: 0;
             display: block; /* Garante que ocupe a linha toda */
-            font-size: clamp(0.65rem, 3.2vw, 0.9rem); /* Fonte responsiva - CORRIGIDO */
+            font-size: clamp(0.65rem, 3.2vw, 0.9rem); /* Fonte responsiva */
         }
         .visible .terminal-text { opacity: 1; }
         .visible .terminal-line1 { animation: typing 2s steps(32) forwards, blink-caret .75s step-end 2s infinite; }
@@ -169,6 +170,49 @@
          }
         @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 
+        /* NOVA Animação de Imagem Dupla */
+        .image-fuser {
+            position: relative;
+            width: 128px;
+            height: 128px;
+            border-radius: 9999px;
+            overflow: hidden;
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+        .image-fuser .image-base, .image-fuser .image-overlay-wrapper {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+        }
+        .image-fuser img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .image-overlay-wrapper {
+            animation: wipe-reveal 10s infinite ease-in-out;
+        }
+        .horizontal-scanline {
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px; height: 100%;
+            background: var(--radioactive-green);
+            box-shadow: 0 0 10px var(--radioactive-green), 0 0 20px var(--radioactive-green);
+            animation: wipe-scan 10s infinite ease-in-out;
+        }
+        @keyframes wipe-reveal {
+            0%   { clip-path: inset(0 0 0 0); }
+            45%  { clip-path: inset(0 0 0 100%); }
+            55%  { clip-path: inset(0 0 0 100%); }
+            95%  { clip-path: inset(0 0 0 0); }
+            100% { clip-path: inset(0 0 0 0); }
+        }
+        @keyframes wipe-scan {
+            0%   { transform: translateX(0px); }
+            45%  { transform: translateX(128px); }
+            55%  { transform: translateX(128px); }
+            95%  { transform: translateX(0px); }
+            100% { transform: translateX(0px); }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -218,7 +262,17 @@
         <!-- Sobre 4: Perfil -->
         <section id="sobre-4">
              <div class="reveal">
-                <img src="https://placehold.co/200x200/0a0a1a/e0e0e0?text=PH" alt="Foto de Pedro Henrique" class="rounded-full w-32 h-32 mb-6 border-2 border-cyan-400/50 shadow-lg shadow-cyan-500/20">
+                <div class="image-fuser mx-auto mb-6">
+                    <!-- Imagem de fundo (VET) -->
+                    <div class="image-base">
+                        <img src="imagem1.1.png" alt="Imagem Veterinária" onerror="this.onerror=null; this.src='https://placehold.co/200x200/6a0dad/e0e0e0?text=VET';">
+                    </div>
+                    <!-- Imagem do topo (TECH) que é "varrida" -->
+                    <div class="image-overlay-wrapper">
+                        <img src="imagem2.2.png" alt="Imagem Tecnologia" onerror="this.onerror=null; this.src='https://placehold.co/200x200/39ff14/0a0a1a?text=TECH';">
+                    </div>
+                    <div class="horizontal-scanline"></div>
+                </div>
             </div>
             <h2 class="reveal delay-1 text-3xl font-bold text-cyan-400 mb-4">PERFIL</h2>
             <p class="reveal delay-2 max-w-md text-lg text-gray-300">Proativo, com excelente capacidade de aprendizado e habilidades interpessoais, garanto uma colaboração eficaz em equipes multidisciplinares, essenciais para projetos que unem ciência e tecnologia.</p>
@@ -402,7 +456,7 @@
             <div class="p-6 rounded-lg bg-black/50 w-full max-w-sm sm:max-w-md terminal-window reveal">
                 <div>
                     <p class="terminal-text terminal-line1 text-green-400 text-left">> STATUS: PRONTO PARA CONEXÃO</p>
-                    <p class="terminal-text terminal-line2 text-green-400 text-left">> OBJETIVO: INOVAR.COLABORAR.CRESCER.</p>
+                    <p class="terminal-text terminal-line2 text-green-400 text-left">> OBJETIVO: INOVAR. COLABORAR. CRESCER.</p>
                     <p class="terminal-text terminal-line3 text-green-400 text-left">> AGUARDANDO COMANDO...</p>
                 </div>
                 <div class="mt-8">
@@ -444,4 +498,4 @@
         });
     </script>
 </body>
-</html>
+</html
