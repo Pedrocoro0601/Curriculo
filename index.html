@@ -287,7 +287,67 @@
         .reveal.visible .journey-svg .stop-3 { animation-delay: 2.5s; }
         @keyframes light-up-stop { to { opacity: 1; filter: drop-shadow(0 0 5px var(--primary-glow-color)); } }
         
-        /* Balloon Styles */
+        /* Game Styles */
+        #game-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            display: none;
+        }
+        #scoreboard {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: var(--font-tech);
+            color: var(--bg-color);
+            background: rgba(255, 255, 255, 0.7);
+            padding: 15px 25px;
+            border-radius: 8px;
+            border: 1px solid var(--primary-glow-color);
+            z-index: 21;
+            display: none;
+            text-align: right;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            font-size: 1.2rem;
+        }
+        #scoreboard .score-item {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 8px;
+        }
+        #scoreboard .score-logo {
+            width: 32px;
+            height: 32px;
+            margin-right: 15px;
+        }
+        #game-over-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 26, 0.9);
+            color: #ff5f56;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 22;
+            font-family: var(--font-tech);
+            font-size: 3rem;
+            text-shadow: 0 0 15px #ff5f56;
+        }
+        @media (min-width: 768px) {
+            #game-over-screen {
+                font-size: 4rem;
+            }
+        }
+
+        /* Balloon Styles (pre-game) */
         .balloon-container {
             position: absolute;
             top: 0;
@@ -344,6 +404,11 @@
                 opacity: 0;
             }
         }
+        
+        @keyframes float-up {
+            from { transform: translateY(0); }
+            to { transform: translateY(-120vh); }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -353,15 +418,23 @@
     <main>
         <!-- Welcome -->
         <section id="welcome">
-            <div id="balloon-container" class="balloon-container"></div>
-            <div class="reveal z-10">
-                <h1 class="text-4xl sm:text-6xl font-bold text-white uppercase tracking-widest glitch-text" data-text="BEM-VINDO">BEM-VINDO</h1>
-                <p class="mt-4 text-cyan-300 font-tech">SYSTEM INTERFACE: P.H.R.S. CURRICULO ONLINE</p>
-            </div>
-            <div class="mt-8 reveal delay-1 z-10">
-                <a id="iniciar-sistema-btn" class="terminal-button inline-block p-4 border-2 hover:bg-cyan-400 hover:text-black sound-on-click">
-                    INICIAR_SISTEMA
-                </a>
+            <!-- Game Elements -->
+            <canvas id="game-canvas"></canvas>
+            <div id="scoreboard"></div>
+            <div id="game-over-screen">GAME OVER</div>
+            
+            <!-- Pre-Game Elements -->
+            <div id="pre-game-container">
+                <div id="balloon-container" class="balloon-container"></div>
+                <div class="reveal z-10">
+                    <h1 class="text-4xl sm:text-6xl font-bold text-white uppercase tracking-widest glitch-text" data-text="BEM-VINDO">BEM-VINDO</h1>
+                    <p class="mt-4 text-cyan-300 font-tech">SYSTEM INTERFACE: P.H.R.S. CURRICULO ONLINE</p>
+                </div>
+                <div class="mt-8 reveal delay-1 z-10">
+                    <a id="iniciar-sistema-btn" class="terminal-button inline-block p-4 border-2 hover:bg-cyan-400 hover:text-black sound-on-click">
+                        INICIAR_SISTEMA
+                    </a>
+                </div>
             </div>
         </section>
 
@@ -692,9 +765,12 @@
             });
         }, { threshold: 0.3 });
 
-        document.querySelectorAll('section').forEach(section => {
+        document.querySelectorAll('section:not(#welcome)').forEach(section => {
             revealObserver.observe(section);
         });
+        // Manually trigger reveal for the welcome section
+        document.getElementById('pre-game-container').querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+
 
         function runDecoderEffect(element) {
             if(!element) return;
@@ -832,84 +908,262 @@
         prevExperienceBtn.addEventListener('click', () => showExperience(currentExperienceIndex - 1));
         nextExperienceBtn.addEventListener('click', () => showExperience(currentExperienceIndex + 1));
         
-        // --- LÓGICA DOS BALÕES ---
-        const dynamicAnimationStyleSheet = (() => {
-            const style = document.createElement('style');
-            document.head.appendChild(style);
-            return style.sheet;
-        })();
-
+        // --- LÓGICA DO JOGO ---
+        const gameCanvas = document.getElementById('game-canvas');
+        const ctx = gameCanvas.getContext('2d');
+        const scoreboardDiv = document.getElementById('scoreboard');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const preGameContainer = document.getElementById('pre-game-container');
         const balloonContainer = document.getElementById('balloon-container');
+
+        let isGameActive = false;
+        let animationFrameId;
+
+        // ** ADICIONE OS CAMINHOS PARA SUAS IMAGENS AQUI **
+        const rocketImage = new Image();
+        rocketImage.src = 'foguetee.png'; // <-- TROQUE A IMAGEM PARA UM GIF AQUI
         
-        // ** ADICIONE OS CAMINHOS PARA SEUS LOGOTIPOS AQUI **
-        const logoImages = [
+        const logoImageSources = [
             'zebuembryo.png', // Caminho para a imagem 1
-            'copia.png', // Caminho para a imagem 2
-            'genex.png', // Caminho para a imagem 3
-            'ABS.png'  // Caminho para a imagem 4
+            'genex.png', // Caminho para a imagem 2
+            'ABS.png', // Caminho para a imagem 3
+            'copia.png'  // Caminho para a imagem 4
         ];
-        
-        const weightedLogoSelection = [
-            logoImages[0], logoImages[0], logoImages[0], logoImages[0], 
-            logoImages[1],
-            logoImages[2],
-            logoImages[3]
-        ];
+        const logoImages = logoImageSources.map(src => {
+            const img = new Image();
+            img.src = src;
+            return img;
+        });
 
-        function createBalloon() {
-            if (!document.hidden) { 
-                const balloon = document.createElement('div');
-                balloon.className = 'balloon';
-                
-                const logoImg = document.createElement('img');
-                logoImg.src = weightedLogoSelection[Math.floor(Math.random() * weightedLogoSelection.length)];
-                logoImg.alt = 'Logotipo flutuante';
-                logoImg.onerror = function() { this.style.display='none'; }; 
-                balloon.appendChild(logoImg);
+        // Game state variables
+        let player, projectiles, enemies, particles, score, shootInterval, spawnTimeout;
 
-                balloon.style.left = `${Math.random() * 90}%`;
-                balloon.style.animationDuration = `${Math.random() * 4 + 5}s`;
-                
-                const drift = Math.random() > 0.5 ? 'float-up-right' : 'float-up-left';
-                const horizontalMovement = Math.random() * 200 + 50;
-                const animationName = `${drift}-${Math.random().toString(36).substr(2, 9)}`;
-                
-                const keyframes = `
-                    @keyframes ${animationName} {
-                        0% { transform: translateY(0) translateX(0); opacity: 1; }
-                        90% { opacity: 1; }
-                        100% { transform: translateY(-120vh) translateX(${drift.includes('right') ? '' : '-'}${horizontalMovement}px); opacity: 0; }
-                    }`;
-                try {
-                    const ruleIndex = dynamicAnimationStyleSheet.insertRule(keyframes, dynamicAnimationStyleSheet.cssRules.length);
-                    balloon.addEventListener('animationend', () => {
-                        balloon.remove();
-                    });
-
-                } catch (e) {
-                    console.error("Falha ao inserir a regra de keyframes:", e);
-                }
-                balloon.style.animationName = animationName;
-                balloon.style.animationTimingFunction = 'linear';
-                balloon.style.animationIterationCount = '1';
-                balloon.style.animationFillMode = 'forwards';
-                
-                balloon.addEventListener('click', (e) => {
-                    if (soundEnabled) pluckSynth.triggerAttackRelease('G5', '8n');
-                    
-                    const rect = balloon.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-
-                    for(let i = 0; i < 15; i++) {
-                        createParticle(rect.left + x, rect.top + y);
-                    }
-                    
-                    if (balloon.parentNode) balloon.remove();
-                });
-                
-                balloonContainer.appendChild(balloon);
+        class Player {
+            constructor(x, y, width, height, image) {
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+                this.image = image;
             }
+            draw() {
+                if (this.image.complete && this.image.naturalHeight !== 0) {
+                    ctx.drawImage(this.image, this.x - this.width / 2, this.y, this.width, this.height);
+                } else { // Fallback if image fails to load
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(this.x - this.width / 2, this.y, this.width, this.height);
+                }
+            }
+        }
+
+        class Projectile {
+            constructor(x, y, radius, color, velocity) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.color = color;
+                this.velocity = velocity;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            update() {
+                this.draw();
+                this.y += this.velocity.y;
+            }
+        }
+        
+        class Enemy {
+             constructor(x, y, radius, velocity, image, imageSrc) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.velocity = velocity;
+                this.image = image;
+                this.imageSrc = imageSrc;
+            }
+            draw() {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.fill();
+                if (this.image.complete && this.image.naturalHeight !== 0) {
+                    ctx.clip();
+                    ctx.drawImage(this.image, this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2);
+                }
+                ctx.restore();
+            }
+            update() {
+                this.draw();
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+            }
+        }
+
+        function initGame() {
+            isGameActive = true;
+            preGameContainer.style.display = 'none';
+            balloonContainer.style.display = 'none';
+            gameCanvas.style.display = 'block';
+            scoreboardDiv.style.display = 'block';
+            
+            gameCanvas.width = window.innerWidth;
+            gameCanvas.height = window.innerHeight;
+
+            player = new Player(gameCanvas.width / 2, gameCanvas.height - 70, 60, 60, rocketImage);
+            projectiles = [];
+            enemies = [];
+            particles = [];
+            score = {};
+            logoImageSources.forEach(src => score[src] = 0);
+
+            updateScoreboard();
+
+            shootInterval = setInterval(() => {
+                if (isGameActive) {
+                    projectiles.push(new Projectile(player.x, player.y, 5, 'cyan', { y: -10 }));
+                }
+            }, 150);
+
+            spawnLoop();
+
+            animate();
+        }
+        
+        function spawnLoop() {
+            if (!isGameActive) return;
+            const totalScore = Object.values(score).reduce((a, b) => a + b, 0);
+            const spawnDelay = Math.max(200, 700 - totalScore * 10); // Diminui o tempo de spawn com a pontuação
+            
+            spawnEnemy();
+
+            spawnTimeout = setTimeout(spawnLoop, spawnDelay);
+        }
+
+        function spawnEnemy() {
+            const radius = Math.random() * (40 - 20) + 20;
+            const x = Math.random() * gameCanvas.width;
+            const y = 0 - radius;
+            
+            const totalScore = Object.values(score).reduce((a, b) => a + b, 0);
+            const speed = (Math.random() * 2 + 3.5) + (totalScore * 0.05); // Aumenta a velocidade com a pontuação
+            const velocity = { x: 0, y: speed }; 
+            
+            const logoIndex = Math.floor(Math.random() * logoImages.length);
+            const image = logoImages[logoIndex];
+            const imageSrc = logoImageSources[logoIndex];
+            
+            enemies.push(new Enemy(x, y, radius, velocity, image, imageSrc));
+        }
+
+        function updateScoreboard() {
+            scoreboardDiv.innerHTML = '';
+            logoImageSources.forEach(src => {
+                const scoreItem = document.createElement('div');
+                scoreItem.className = 'score-item';
+                scoreItem.innerHTML = `
+                    <img src="${src}" class="score-logo" alt="logo">
+                    <span>${score[src]}</span>
+                `;
+                scoreboardDiv.appendChild(scoreItem);
+            });
+        }
+        
+        function animate() {
+            if (!isGameActive) return;
+            animationFrameId = requestAnimationFrame(animate);
+            ctx.fillStyle = 'rgba(10, 10, 26, 0.3)';
+            ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+            player.draw();
+
+            projectiles.forEach((p, pIndex) => {
+                p.update();
+                if (p.y + p.radius < 0) {
+                    setTimeout(() => projectiles.splice(pIndex, 1), 0);
+                }
+            });
+
+            enemies.forEach((enemy, eIndex) => {
+                enemy.update();
+                
+                if(enemy.y - enemy.radius > gameCanvas.height) {
+                    gameOver();
+                }
+
+                projectiles.forEach((projectile, pIndex) => {
+                    const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
+                    if (dist - enemy.radius - projectile.radius < 1) {
+                        for(let i = 0; i < enemy.radius * 2; i++) {
+                           createParticle(projectile.x, projectile.y);
+                        }
+                        
+                        score[enemy.imageSrc]++;
+                        updateScoreboard();
+
+                        setTimeout(() => {
+                            enemies.splice(eIndex, 1);
+                            projectiles.splice(pIndex, 1);
+                        }, 0);
+                    }
+                });
+            });
+        }
+
+        function gameOver() {
+            isGameActive = false;
+            cancelAnimationFrame(animationFrameId);
+            clearInterval(shootInterval);
+            clearTimeout(spawnTimeout);
+            gameOverScreen.style.display = 'flex';
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            if (player) player.x = e.clientX;
+        });
+        window.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+        window.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (player && e.touches.length > 0) player.x = e.touches[0].clientX;
+        }, { passive: false });
+
+        const preGameBalloonInterval = setInterval(() => {
+            if (!isGameActive) createPreGameBalloon();
+        }, 1000);
+
+        function createPreGameBalloon() {
+            if (document.hidden) return;
+            const balloon = document.createElement('div');
+            balloon.className = 'balloon';
+
+            const logoIndex = Math.floor(Math.random() * logoImages.length);
+            const logoImg = document.createElement('img');
+            logoImg.src = logoImageSources[logoIndex];
+            logoImg.alt = 'Logotipo flutuante';
+            balloon.appendChild(logoImg);
+
+            balloon.style.left = `${Math.random() * 90}%`;
+            balloon.style.animation = `float-up ${Math.random() * 7 + 8}s linear infinite`;
+            balloon.style.animationDelay = `${Math.random() * 5}s`;
+            
+            balloon.addEventListener('click', () => {
+                if (!isGameActive) {
+                    if (soundEnabled) pluckSynth.triggerAttackRelease('G5', '8n');
+                    clearInterval(preGameBalloonInterval);
+                    document.querySelectorAll('.balloon').forEach(b => b.remove());
+                    initGame();
+                }
+            }, { once: true });
+            
+            balloonContainer.appendChild(balloon);
         }
 
         function createParticle(x, y) {
@@ -917,21 +1171,13 @@
             particle.className = 'explosion-particle';
             particle.style.left = `${x}px`;
             particle.style.top = `${y}px`;
-
             const angle = Math.random() * 360;
             const distance = Math.random() * 80 + 50;
-
             particle.style.setProperty('--x', `${Math.cos(angle * Math.PI / 180) * distance}px`);
             particle.style.setProperty('--y', `${Math.sin(angle * Math.PI / 180) * distance}px`);
-
             document.body.appendChild(particle);
-
-            particle.addEventListener('animationend', () => {
-                particle.remove();
-            });
+            particle.addEventListener('animationend', () => particle.remove());
         }
-
-        setInterval(createBalloon, 1000); 
     });
     </script>
 </body>
