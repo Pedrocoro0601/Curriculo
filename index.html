@@ -1217,7 +1217,71 @@
         #restart-btn {
             display: none;
         }
+        
+        /* ======================= */
+        /* === MOBILE FIXES START === */
+        /* ======================= */
+        @media (max-width: 768px) {
+            #player-rocket {
+                width: 40px;
+                height: 64px;
+            }
 
+            .falling-balloon {
+                width: 50px;
+                height: 50px;
+            }
+
+            .oocyte-projectile {
+                width: 10px;
+                height: 10px;
+            }
+            
+            #game-score-area {
+                top: 10px;
+                right: 10px;
+            }
+
+            #total-score-display {
+                font-size: 1.2rem;
+            }
+
+            #detailed-score-display {
+                font-size: 0.7rem;
+                gap: 0.1rem 0.5rem;
+                grid-template-columns: repeat(1, auto); /* Stack scores vertically */
+            }
+            
+            .score-item img {
+                width: 18px;
+                height: 18px;
+            }
+
+            #close-game-btn {
+                top: 10px;
+                left: 10px;
+                width: 35px;
+                height: 35px;
+                font-size: 1.2rem;
+            }
+
+            #game-over-screen h2 {
+                font-size: 2.2rem;
+            }
+
+            #game-over-screen p {
+                font-size: 1.2rem;
+            }
+
+            #final-detailed-score {
+                grid-template-columns: repeat(2, auto); /* 2 columns for final score */
+                font-size: 1rem;
+                gap: 0.5rem 1rem;
+            }
+        }
+        /* ======================= */
+        /* === MOBILE FIXES END === */
+        /* ======================= */
     </style>
 
     <script>
@@ -1296,7 +1360,7 @@
                 
                 try {
                    if (window.Tone && typeof pluckSynth !== 'undefined') {
-                       pluckSynth.triggerAttackRelease('C5', '8n', Tone.context.currentTime);
+                        pluckSynth.triggerAttackRelease('C5', '8n', Tone.context.currentTime);
                    }
                 } catch(e) { console.error("Tone.js sound failed:", e); }
                 
@@ -1495,6 +1559,9 @@
             const logoData = LOGO_DATA[Math.floor(Math.random() * LOGO_DATA.length)];
             target.dataset.logoId = logoData.id;
             
+            // The hardcoded value here (70) refers to the desktop size. 
+            // On mobile, this just means targets won't spawn at the very edge of the screen, which is acceptable.
+            // The JS for movement and collision detection correctly uses offsetWidth/getBoundingClientRect, so it works fine.
             target.style.left = `${Math.random() * (gameArea.offsetWidth - 70)}px`;
             target.innerHTML = `<img src="${logoData.src}" alt="${logoData.id}">`;
             targetsContainer.appendChild(target);
@@ -1530,22 +1597,22 @@
                     if (!(pRect.right < tRect.left || pRect.left > tRect.right || pRect.bottom < tRect.top || pRect.top > tRect.bottom)) {
                        const logoId = t.dataset.logoId;
                        if (logoId && score.hasOwnProperty(logoId)) {
-                           score[logoId]++;
-                           totalScore += 10;
+                            score[logoId]++;
+                            totalScore += 10;
                        }
                        
                        // UPDATED: Faster difficulty progression
                        if (totalScore > 0 && totalScore % 40 === 0 && fallSpeed < 12) {
-                           fallSpeed += 0.5;
+                            fallSpeed += 0.5;
                        }
 
                        t.remove();
                        p.remove();
                        updateScoreDisplay();
                        try {
-                           if (window.Tone && typeof synth !== 'undefined') {
-                              synth.triggerAttackRelease('E4', '8n', Tone.context.currentTime);
-                           }
+                            if (window.Tone && typeof synth !== 'undefined') {
+                                synth.triggerAttackRelease('E4', '8n', Tone.context.currentTime);
+                            }
                        } catch(e) { console.error("Tone.js sound failed:", e); }
                        break;
                     }
@@ -1562,4 +1629,3 @@
 
 </body>
 </html>
-�
