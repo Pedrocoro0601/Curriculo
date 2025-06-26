@@ -101,6 +101,7 @@
             .next-btn {
                 bottom: 8rem; /* Higher position for most mobile sections */
             }
+            /* Specific adjustment for 'Perfil Híbrido' and 'Formação Acadêmica' */
             #sobre-4 .next-btn,
             #formacao .next-btn {
                 bottom: 6rem; /* Slightly lower position for these sections on mobile */
@@ -147,21 +148,22 @@
         .image-fuser img { width: 100%; height: 100%; object-fit: cover; }
         
         .image-overlay-wrapper {
-            animation: wipe-fuser 2s alternate infinite ease-in-out;
+            animation: wipe-fuser 2s alternate infinite ease-in-out; /* Mais rápido */
         }
         .horizontal-scanline {
             position: absolute; top: 0; left: 0;
             width: 3px; height: 100%;
-            background: var(--bg-color);
-            animation: scan-fuser 2s alternate infinite ease-in-out;
+            background: var(--bg-color); /* Mesma cor do fundo */
+            /* box-shadow removido para simular 'corte' */
+            animation: scan-fuser 2s alternate infinite ease-in-out; /* Mais rápido */
         }
         @keyframes wipe-fuser {
             from { clip-path: inset(0 100% 0 0); }
             to   { clip-path: inset(0 0 0 0); }
         }
         @keyframes scan-fuser {
-            from { transform: translateX(-3px); }
-            to   { transform: translateX(163px); }
+            from { transform: translateX(-3px); } /* Começa totalmente fora à esquerda */
+            to   { transform: translateX(163px); } /* Termina totalmente fora à direita */
         }
         
         .terminal-window {
@@ -175,9 +177,10 @@
             font-size: clamp(0.7rem, 2.5vw, 0.9rem);
             line-height: 1.6; text-align: left; white-space: pre-wrap; word-break: break-all;
         }
-        .prompt { display: none; }
-        .terminal-input { display: none; }
-        .cursor { display: none; }
+        /* Remove terminal input line styling as it will be removed from HTML */
+        .prompt { display: none; } /* Hide the prompt if input is not there */
+        .terminal-input { display: none; } /* Hide the input field */
+        .cursor { display: none; } /* Hide the blinking cursor */
 
         .terminal-button { font-family: var(--font-tech); letter-spacing: 0.2em; transition: all 0.3s ease; border-color: var(--primary-glow-color); color: var(--primary-glow-color); }
         .terminal-button:hover { background-color: var(--primary-glow-color); color: var(--bg-color); box-shadow: 0 0 15px var(--primary-glow-color); }
@@ -206,6 +209,8 @@
         .visible .download-complete-text { opacity: 1; }
         
         /* --- Section-Specific Animations --- */
+        
+        /* FOCO EM FIV/PIVE */
         .blastocyst-svg .outer-wall { stroke: var(--primary-glow-color); filter: drop-shadow(0 0 4px var(--primary-glow-color)); animation: pulse-wall 3s infinite ease-in-out; }
         .blastocyst-svg .inner-cell { fill: var(--primary-glow-color); opacity: 0; animation: fade-in-cell 1.5s ease-out forwards; }
         .visible .blastocyst-svg .cell-1 { animation-delay: 0.5s; }
@@ -215,24 +220,72 @@
         @keyframes pulse-wall { 50% { filter: drop-shadow(0 0 12px var(--primary-glow-color)); transform: scale(1.02); } }
         @keyframes fade-in-cell { to { opacity: 0.7; } }
 
-        .ekg-line { stroke-dasharray: 600; stroke-dashoffset: 600; }
-        .visible .ekg-line { animation: draw-line 2s ease-out forwards; }
-        @keyframes draw-line { to { stroke-dashoffset: 0; } }
+        /* DA CLÍNICA À BIOTECNOLOGIA */
+        .ekg-line {
+            stroke-dasharray: 600; /* Comprimento aproximado do caminho */
+            stroke-dashoffset: 600;
+        }
+        .visible .ekg-line {
+            animation: draw-line 2s ease-out forwards;
+        }
+        @keyframes draw-line {
+            to { stroke-dashoffset: 0; }
+        }
         
-        .circuit-board { stroke-dasharray: 200; stroke-dashoffset: 200; }
-        .visible .circuit-board { animation: draw-line 2s ease-out forwards; }
+        /* INTEGRANDO A TECNOLOGIA */
+        .circuit-board {
+            stroke-dasharray: 200; /* Comprimento aproximado do caminho */
+            stroke-dashoffset: 200;
+        }
+        .visible .circuit-board {
+            animation: draw-line 2s ease-out forwards;
+        }
         
-        .terminal-card { background: rgba(10, 20, 30, 0.7); border: 1px solid var(--primary-glow-color); backdrop-filter: blur(5px); font-family: var(--font-tech); text-align: left; font-size: clamp(0.7rem, 2.5vw, 0.9rem); padding: 1rem; opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
-        .terminal-card.visible { opacity: 1; transform: translateY(0); }
-        .terminal-card p { opacity: 0; transform: translateY(10px); }
+        /* JORNADA */
+        .terminal-card {
+            background: rgba(10, 20, 30, 0.7);
+            border: 1px solid var(--primary-glow-color);
+            backdrop-filter: blur(5px);
+            font-family: var(--font-tech);
+            text-align: left;
+            font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+            padding: 1rem;
+            opacity: 0; /* Hidden by default for reveal effect */
+            transform: translateY(20px); /* Hidden by default for reveal effect */
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .terminal-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .terminal-card p {
+            opacity: 0;
+            transform: translateY(10px);
+        }
         .terminal-card.visible p { animation: fade-in-up 0.5s forwards; }
         .terminal-card.visible .line2 { animation-delay: 0.2s; }
         .terminal-card.visible .line3 { animation-delay: 0.4s; }
         .terminal-card.visible .line4 { animation-delay: 0.6s; }
-        @keyframes fade-in-up { to { opacity: 1; transform: translateY(0); } }
+        @keyframes fade-in-up {
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        .editor-card { border: 1px solid #3a3a3a; border-radius: 8px; width: 100%; max-width: 320px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); background: #1e1e1e; }
-        .editor-header { display: flex; align-items: center; padding: 8px; background: #333; }
+        /* COMPETÊNCIAS */
+        .editor-card {
+            border: 1px solid #3a3a3a;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 320px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: #1e1e1e; /* Default background for editor cards */
+        }
+        .editor-header {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background: #333;
+        }
         .editor-header .dots { display: flex; }
         .editor-header .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; }
         .dot-1 { background: #ff5f56; }
@@ -266,148 +319,70 @@
         .graph-bg { position: absolute; inset: 0; opacity: 0.1; stroke: var(--primary-glow-color); stroke-width: 2; fill: none; }
         .reveal.visible .graph-bg { animation: draw-line 2s ease-out 0.8s forwards; }
 
-        .holographic-card { position: relative; overflow: hidden; border: 1px solid rgba(0,255,255,0.2); transition: border-color 0.4s; }
+        .holographic-card {
+            position: relative; overflow: hidden;
+            border: 1px solid rgba(0,255,255,0.2);
+            transition: border-color 0.4s;
+        }
         .holographic-card:hover { border-color: rgba(0,255,255,0.6); }
-        .holographic-card::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, rgba(191,0,255,0.1), rgba(191,0,255,0.1) 1px, transparent 1px, transparent 10px); opacity: 0; transition: opacity 0.4s; }
+        .holographic-card::before {
+            content: ""; position: absolute; inset: 0;
+            background: repeating-linear-gradient(45deg, rgba(191,0,255,0.1), rgba(191,0,255,0.1) 1px, transparent 1px, transparent 10px);
+            opacity: 0; transition: opacity 0.4s;
+        }
         .holographic-card:hover::before { opacity: 1; }
         
-        .info-scan-card { background: rgba(10, 10, 26, 0.5); backdrop-filter: blur(5px); border: 1px solid rgba(0, 255, 255, 0.3); position: relative; overflow: hidden; } 
-        .scanline { position: absolute; top: -10%; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--primary-glow-color), transparent); box-shadow: 0 0 10px var(--primary-glow-color); animation: scan 4s ease-in-out infinite 1s; } 
-        @keyframes scan { 0% { top: -10%; } 100% { top: 110%; } } 
-        .info-scan-card .info-item { opacity: 0; transition: opacity 0.5s ease; } 
+        /* INFO PESSOAL */
+        .info-scan-card { 
+            background: rgba(10, 10, 26, 0.5); 
+            backdrop-filter: blur(5px); 
+            border: 1px solid rgba(0, 255, 255, 0.3); 
+            position: relative; 
+            overflow: hidden; 
+        } 
+        .scanline { 
+            position: absolute; 
+            top: -10%; left: 0; right: 0; 
+            height: 2px; 
+            background: linear-gradient(90deg, transparent, var(--primary-glow-color), transparent); 
+            box-shadow: 0 0 10px var(--primary-glow-color); 
+            animation: scan 4s ease-in-out infinite 1s; 
+        } 
+        @keyframes scan { 
+            0% { top: -10%; } 
+            100% { top: 110%; } 
+        } 
+        .info-scan-card .info-item { 
+            opacity: 0; 
+            transition: opacity 0.5s ease; 
+        } 
         .reveal.visible .info-item-1 { animation: fade-in-up 0.5s forwards 1s; } 
         .reveal.visible .info-item-2 { animation: fade-in-up 0.5s forwards 1.3s; } 
         .reveal.visible .info-item-3 { animation: fade-in-up 0.5s forwards 1.6s; } 
         
-        .journey-svg .journey-path { stroke-dasharray: 600; stroke-dashoffset: 600; }
-        .reveal.visible .journey-svg .journey-path { animation: draw-line 3s ease-out forwards 0.5s; }
-        .journey-svg .journey-stop { opacity: 0; }
-        .reveal.visible .journey-svg .journey-stop { animation: light-up-stop 1s forwards; }
+        /* EXPERIÊNCIAS DIVERSAS */
+        .journey-svg .journey-path {
+            stroke-dasharray: 600;
+            stroke-dashoffset: 600;
+        }
+        .reveal.visible .journey-svg .journey-path {
+            animation: draw-line 3s ease-out forwards 0.5s;
+        }
+
+        .journey-svg .journey-stop {
+            opacity: 0;
+        }
+        .reveal.visible .journey-svg .journey-stop {
+            animation: light-up-stop 1s forwards;
+        }
         .reveal.visible .journey-svg .stop-2 { animation-delay: 1.5s; }
         .reveal.visible .journey-svg .stop-3 { animation-delay: 2.5s; }
-        @keyframes light-up-stop { to { opacity: 1; filter: drop-shadow(0 0 5px var(--primary-glow-color)); } }
-        
-        /* Game Styles */
-        #game-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 20;
-            display: none;
-        }
-        #scoreboard {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-family: var(--font-tech);
-            color: var(--bg-color);
-            background: rgba(255, 255, 255, 0.7);
-            padding: 15px 25px;
-            border-radius: 8px;
-            border: 1px solid var(--primary-glow-color);
-            z-index: 21;
-            display: none;
-            text-align: right;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-            font-size: 1.2rem;
-        }
-        #scoreboard .score-item {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            margin-bottom: 8px;
-        }
-        #scoreboard .score-logo {
-            width: 32px;
-            height: 32px;
-            margin-right: 15px;
-        }
-        #game-over-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 10, 26, 0.9);
-            color: #ff5f56;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 22;
-            font-family: var(--font-tech);
-            font-size: 3rem;
-            text-shadow: 0 0 15px #ff5f56;
-        }
-        @media (min-width: 768px) {
-            #game-over-screen {
-                font-size: 4rem;
-            }
-        }
 
-        /* Balloon Styles (pre-game) */
-        .balloon-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
-        }
-        .balloon {
-            position: absolute;
-            bottom: -100px;
-            width: 80px;
-            height: 80px;
-            background-color: rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            pointer-events: all;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5), inset 0 0 10px rgba(255,255,255,0.3);
-            transition: transform 0.2s ease-out, opacity 0.2s ease-out;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 5px;
-        }
-        .balloon:hover {
-            transform: scale(1.1);
-        }
-        .balloon img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 50%;
-        }
-        
-        .explosion-particle {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background-color: var(--primary-glow-color);
-            border-radius: 50%;
-            pointer-events: none;
-            opacity: 1;
-            animation: explode 0.7s ease-out forwards;
-        }
-
-        @keyframes explode {
-            0% {
-                transform: translate(0, 0) scale(1);
+        @keyframes light-up-stop {
+            to {
                 opacity: 1;
+                filter: drop-shadow(0 0 5px var(--primary-glow-color));
             }
-            100% {
-                transform: translate(var(--x), var(--y)) scale(0);
-                opacity: 0;
-            }
-        }
-        
-        @keyframes float-up {
-            from { transform: translateY(0); }
-            to { transform: translateY(-120vh); }
         }
     </style>
 </head>
@@ -418,23 +393,14 @@
     <main>
         <!-- Welcome -->
         <section id="welcome">
-            <!-- Game Elements -->
-            <canvas id="game-canvas"></canvas>
-            <div id="scoreboard"></div>
-            <div id="game-over-screen">GAME OVER</div>
-            
-            <!-- Pre-Game Elements -->
-            <div id="pre-game-container">
-                <div id="balloon-container" class="balloon-container"></div>
-                <div class="reveal z-10">
-                    <h1 class="text-4xl sm:text-6xl font-bold text-white uppercase tracking-widest glitch-text" data-text="BEM-VINDO">BEM-VINDO</h1>
-                    <p class="mt-4 text-cyan-300 font-tech">SYSTEM INTERFACE: P.H.R.S. CURRICULO ONLINE</p>
-                </div>
-                <div class="mt-8 reveal delay-1 z-10">
-                    <a id="iniciar-sistema-btn" class="terminal-button inline-block p-4 border-2 hover:bg-cyan-400 hover:text-black sound-on-click">
-                        INICIAR_SISTEMA
-                    </a>
-                </div>
+            <div class="reveal">
+                <h1 class="text-4xl sm:text-6xl font-bold text-white uppercase tracking-widest glitch-text" data-text="BEM-VINDO">BEM-VINDO</h1>
+                <p class="mt-4 text-cyan-300 font-tech">SYSTEM INTERFACE: P.H.R.S. CURRICULO ONLINE</p>
+            </div>
+            <div class="mt-8 reveal delay-1">
+                <a id="iniciar-sistema-btn" class="terminal-button inline-block p-4 border-2 hover:bg-cyan-400 hover:text-black sound-on-click">
+                    INICIAR_SISTEMA
+                </a>
             </div>
         </section>
 
@@ -451,7 +417,7 @@
             </a>
         </section>
 
-        <!-- Outras seções... -->
+        <!-- Sobre 2: Transição VET -->
         <section id="sobre-2">
             <div class="reveal">
                 <svg viewBox="0 0 100 50" class="w-24 h-12 mb-4">
@@ -465,6 +431,7 @@
             </a>
         </section>
         
+        <!-- Sobre 3: Transição TECH -->
         <section id="sobre-3" class="bg-black/20">
             <div class="reveal">
                 <svg viewBox="0 0 100 100" class="w-24 h-24 mb-4">
@@ -478,6 +445,7 @@
             </a>
         </section>
 
+        <!-- Sobre 4: Perfil with Interactive Image -->
         <section id="sobre-4">
             <div class="reveal">
                 <div class="image-fuser mx-auto mb-6">
@@ -497,6 +465,7 @@
             </a>
         </section>
 
+        <!-- Objetivo -->
         <section id="objetivo" class="bg-black/20">
             <div class="reveal mb-4">
                 <svg class="w-24 h-24 blastocyst-svg" viewBox="0 0 100 100">
@@ -516,6 +485,7 @@
             </a>
         </section>
 
+        <!-- Formação -->
         <section id="formacao">
             <h2 class="reveal text-3xl font-bold text-cyan-400 mb-8">FORMAÇÃO ACADÊMICA</h2>
             <div class="reveal delay-1 p-6 rounded-lg bg-gray-900/50 border border-purple-500/50 w-full max-w-sm mb-6">
@@ -540,9 +510,11 @@
             </a>
         </section>
 
+        <!-- Experiência: Refactored Single Section -->
         <section id="exp-journey" class="bg-black/20">
             <h2 class="reveal text-3xl font-bold text-cyan-400 mb-4">JORNADA NA MEDICINA VETERINÁRIA</h2>
             <div id="experience-card-container" class="reveal delay-1 w-full max-w-sm relative">
+                <!-- Experience cards will be dynamically loaded here -->
             </div>
             <div class="flex space-x-4 mt-6">
                 <button id="prev-experience-btn" class="terminal-button inline-block p-3 border-2 sound-on-click opacity-50 cursor-not-allowed">
@@ -557,6 +529,7 @@
             </a>
         </section>
 
+        <!-- Experiências Diversas -->
         <section id="exp-diversas">
             <div class="reveal w-full max-w-md mb-4">
                 <svg viewBox="0 0 300 100" class="journey-svg w-full">
@@ -582,6 +555,7 @@
             </a>
         </section>
 
+        <!-- Competências Sections -->
         <section id="comp-1" class="bg-black/20">
             <div class="reveal editor-card scientific-card">
                 <div class="editor-header"><div class="dots"><div class="dot dot-1"></div><div class="dot dot-2"></div><div class="dot dot-3"></div></div><div class="title">BioAnalysis.sh</div></div>
@@ -643,9 +617,10 @@
             <a href="#adicionais" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400 sound-on-click"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></a>
         </section>
         
+        <!-- Informações Adicionais -->
         <section id="adicionais" class="bg-black/20">
             <h2 class="reveal text-3xl font-bold text-cyan-400 mb-8">INFORMAÇÕES ADICIONAIS</h2>
-            <div class="w-full max-w-sm space-y-6 reveal"> 
+            <div class="w-full max-w-sm space-y-6 reveal"> <!-- Adicionado 'reveal' aqui -->
                 <div class="reveal delay-1 p-6 rounded-lg bg-gray-900/50 holographic-card">
                     <p class="text-4xl mb-2">👨‍💻</p>
                     <h3 class="text-xl font-bold">Curso de Programação WEB</h3>
@@ -662,6 +637,7 @@
             </a> 
         </section>
         
+        <!-- Informações Pessoais -->
         <section id="info-pessoal">
             <div class="w-full max-w-sm p-6 rounded-lg info-scan-card reveal"> 
                 <div class="scanline"></div> 
@@ -686,9 +662,16 @@
             </a> 
         </section>
 
+        <!-- Final: Interactive Contact Terminal -->
         <section id="contato">
             <div class="p-4 sm:p-6 rounded-lg bg-black/50 w-full max-w-sm sm:max-w-md terminal-window reveal">
                 <div id="terminal-output" class="terminal-output h-48 overflow-y-auto pr-2"></div>
+                <!-- Removed terminal input line to prevent user typing -->
+                <!-- <div class="terminal-input-line mt-4">
+                    <span class="prompt">&gt;</span>
+                    <input type="text" id="terminal-input" class="terminal-input" autofocus autocomplete="off">
+                    <span class="cursor"></span>
+                </div> -->
             </div>
             <button id="start-connection-btn" class="terminal-button mt-4 p-4 border-2 hover:bg-cyan-400 hover:text-black sound-on-click" style="display: none;">
                 INICIAR CONEXÃO
@@ -697,6 +680,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" /></svg>
             </a>
         </section>
+
     </main>
     
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
@@ -704,12 +688,18 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // --- INICIALIZAÇÃO E CONFIGURAÇÃO GERAL ---
+        // Clear any existing hash in the URL to prevent the browser from
+        // automatically scrolling to a specific section on page load.
         if (window.location.hash) {
             window.location.hash = '';
         }
+
+        // Ensure the page starts at the very top (Welcome section) for consistent behavior across devices.
         setTimeout(() => {
-            document.getElementById('welcome')?.scrollIntoView({ behavior: 'instant' });
+            const welcomeSection = document.getElementById('welcome');
+            if (welcomeSection) {
+                welcomeSection.scrollIntoView({ behavior: 'instant' });
+            }
         }, 200);
 
         let soundEnabled = false;
@@ -739,7 +729,6 @@
 
         particlesJS("particles-js", { particles: { number: { value: 80, density: { enable: true, value_area: 800 } }, color: { value: "#00ffff" }, shape: { type: "circle" }, opacity: { value: 0.5, random: true, anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false } }, size: { value: 2.5, random: true, anim: { enable: false } }, line_linked: { enable: true, distance: 150, color: "#888888", opacity: 0.2, width: 1 }, move: { enable: true, speed: 1, direction: "none", random: true, straight: false, out_mode: "out", bounce: false } }, interactivity: { detect_on: "canvas", events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: true, mode: "push" }, resize: true }, modes: { grab: { distance: 140, line_linked: { opacity: 0.5 } }, push: { particles_nb: 4 } } }, retina_detect: true });
 
-        // --- OBSERVER PARA ANIMAÇÕES DE SCROLL ---
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -765,12 +754,9 @@
             });
         }, { threshold: 0.3 });
 
-        document.querySelectorAll('section:not(#welcome)').forEach(section => {
+        document.querySelectorAll('section').forEach(section => {
             revealObserver.observe(section);
         });
-        // Manually trigger reveal for the welcome section
-        document.getElementById('pre-game-container').querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
-
 
         function runDecoderEffect(element) {
             if(!element) return;
@@ -807,8 +793,8 @@
             }, 40);
         }
         
-        // --- LÓGICA DO TERMINAL ---
         const terminalOutput = document.getElementById('terminal-output');
+        // const terminalInput = document.getElementById('terminal-input'); // Removed
         const startConnectionBtn = document.getElementById('start-connection-btn');
         let terminalInitialized = false;
 
@@ -832,64 +818,168 @@
         }
         
         function initTerminal() {
+            // Check if terminal is already initialized
             if (terminalInitialized) return;
             terminalInitialized = true;
+            
+            // Simulate typing initial message and then the 'help' command
             typeToTerminal("Terminal de Contato Ativo...", () => {
-                typeToTerminal("> help", () => {
-                    processCommand('help');
-                }, 50);
+                typeToTerminal("> help", () => { // Simulate typing '> help'
+                    processCommand('help'); // Then execute the help command
+                }, 50); // Slightly faster typing for automated command
             });
         }
 
+        // Removed keydown listener for terminal input since it's no longer typable
+        /* if(terminalInput) {
+            terminalInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const command = terminalInput.value.trim().toLowerCase();
+                    terminalOutput.innerHTML += `\n<span class="text-cyan-400">> ${command}</span>\n`;
+                    terminalInput.value = '';
+
+                    processCommand(command);
+
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                }
+            });
+        } */
+
+        // Event listener for the "INICIAR_SISTEMA" button on the Welcome screen
+        const iniciarSistemaBtn = document.getElementById('iniciar-sistema-btn');
+        if (iniciarSistemaBtn) {
+            iniciarSistemaBtn.addEventListener('click', (event) => {
+                event.preventDefault(); // Prevent default anchor link behavior
+                if (soundEnabled) {
+                    const now = Tone.context.currentTime;
+                    const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
+                    pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
+                    lastSoundTime = nextScheduledTime;
+                }
+                document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+
+        // Event listener for the NEXT button on "Informações Adicionais"
+        const infoPessoalNextBtn = document.getElementById('info-pessoal-next-btn');
+        if (infoPessoalNextBtn) {
+            infoPessoalNextBtn.addEventListener('click', (event) => {
+                event.preventDefault(); // Prevent default anchor link behavior
+                if (soundEnabled) {
+                    const now = Tone.context.currentTime;
+                    const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
+                    pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
+                    lastSoundTime = nextScheduledTime;
+                }
+                document.getElementById('info-pessoal').scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+
+        // Event listener for the NEXT button on "Informações Pessoais" to initiate the terminal
+        const contatoNextBtn = document.getElementById('contato-next-btn');
+        if (contatoNextBtn) {
+            contatoNextBtn.addEventListener('click', (event) => {
+                event.preventDefault(); // Prevent default anchor link behavior
+                if (soundEnabled) {
+                    const now = Tone.context.currentTime;
+                    const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
+                    pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
+                    lastSoundTime = nextScheduledTime;
+                }
+                document.getElementById('contato').scrollIntoView({ behavior: 'smooth' });
+                initTerminal(); // Explicitly call initTerminal here, only when reaching this section via this button
+            });
+        }
+
+        // Event listener for the "INICIAR CONEXÃO" button (inside the terminal)
+        startConnectionBtn.addEventListener('click', () => {
+            if (soundEnabled) {
+                const now = Tone.context.currentTime;
+                const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
+                pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
+                lastSoundTime = nextScheduledTime;
+            }
+            // Updated link to WhatsApp
+            window.location.href = 'https://api.whatsapp.com/send/?phone=5534988301561&text=Quero+te+contratar%21&type=phone_number&app_absent=0'; 
+        });
+
+
         function processCommand(command) {
+            // Simplified processCommand since user cannot type arbitrary commands
             switch (command) {
                 case 'help':
                     typeToTerminal(helpTextContent, () => {
                         startConnectionBtn.style.display = 'block';
                     });
                     break;
+                // Other commands (contact, socials, clear, exit) are not directly callable by user
+                // but if they were invoked by other means, they would still function
+                case 'contact':
+                    typeToTerminal("Iniciando conexão segura...\n- WhatsApp: <a href='https://wa.me/553498831561' target='_blank' class='text-white underline hover:text-green-300'>+55 34 99883-1561</a>\n- Email: <a href='mailto:pedro.hrs@hotmail.com' class='text-white underline hover:text-green-300'>pedro.hrs@hotmail.com</a>");
+                    startConnectionBtn.style.display = 'none';
+                    break;
+                case 'socials':
+                    typeToTerminal("Acessando perfis...\n- LinkedIn: <a href='#' class='text-white underline hover:text-green-300'>/in/pedro-h-r-s</a>\n- GitHub: <a href='#' class='text-white underline hover:text-green-300'>/pedrohrs-dev</a>");
+                    startConnectionBtn.style.display = 'none';
+                    break;
+                case 'clear':
+                    terminalOutput.innerHTML = '';
+                    startConnectionBtn.style.display = 'none';
+                    break;
+                case 'exit':
+                    typeToTerminal("Conexão encerrada.");
+                    startConnectionBtn.style.display = 'none';
+                    break;
                 default:
+                    // This default case should ideally not be hit if user cannot type.
+                    // But if somehow a non-defined command is passed to processCommand, it handles it.
                     typeToTerminal(`Comando não reconhecido: '${command}'.`); 
                     startConnectionBtn.style.display = 'none';
             }
         }
 
-        // --- NAVEGAÇÃO E BOTÕES ---
-        document.getElementById('iniciar-sistema-btn')?.addEventListener('click', (event) => {
-            event.preventDefault();
-            document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
-        });
-        document.getElementById('info-pessoal-next-btn')?.addEventListener('click', (event) => {
-            event.preventDefault();
-            document.getElementById('info-pessoal').scrollIntoView({ behavior: 'smooth' });
-        });
-        document.getElementById('contato-next-btn')?.addEventListener('click', (event) => {
-            event.preventDefault();
-            document.getElementById('contato').scrollIntoView({ behavior: 'smooth' });
-            initTerminal();
-        });
-        startConnectionBtn.addEventListener('click', () => {
-            window.location.href = 'https://api.whatsapp.com/send/?phone=5534988301561&text=Quero+te+contratar%21&type=phone_number&app_absent=0'; 
-        });
-
-        // --- LÓGICA DAS EXPERIÊNCIAS ---
         const experiences = [
-            { title: 'Auxiliar de Veterinário', local: 'Clínica Amisvet', period: '2023 - 2024', log: 'Atuava na gestão de internações, com atualização de prontuários no SimplesVet, administração de medicações, cuidados com acessos venosos e higiene dos pacientes. Também auxiliava em consultas, cirurgias e rotinas clínicas.' },
-            { title: 'Monitor de Clínica Médica', local: 'Faculdade Patos de Minas', period: '2021 - 2022', log: 'Atuava no suporte a cirurgias e consultas, auxiliando professores e alunos em rotinas clínicas e acadêmicas. Também era responsável pelo agendamento, organização e esterilização de materiais, além do controle de estoque e apoio nos cálculos de medicações e soluções.' },
-            { title: 'Estagiário', local: 'Clínica Veterinária Animale', period: '2020 - 2023', log: 'Auxiliava no cuidado e recuperação dos animais, realizando alimentação, higiene, administração de medicações e manutenção de acessos venosos. Atualizava prontuários e prestava suporte em consultas, cirurgias, organização de materiais e rotina de banho e tosa.' }
+            {
+                title: 'Auxiliar de Veterinário',
+                local: 'Clínica Amisvet',
+                period: '2023 - 2024',
+                log: 'Atuava na gestão de internações, com atualização de prontuários no SimplesVet, administração de medicações, cuidados com acessos venosos e higiene dos pacientes. Também auxiliava em consultas, cirurgias e rotinas clínicas.'
+            },
+            {
+                title: 'Monitor de Clínica Médica',
+                local: 'Faculdade Patos de Minas',
+                period: '2021 - 2022',
+                log: 'Atuava no suporte a cirurgias e consultas, auxiliando professores e alunos em rotinas clínicas e acadêmicas. Também era responsável pelo agendamento, organização e esterilização de materiais, além do controle de estoque e apoio nos cálculos de medicações e soluções.'
+            },
+            {
+                title: 'Estagiário',
+                local: 'Clínica Veterinária Animale',
+                period: '2020 - 2023',
+                log: 'Auxiliava no cuidado e recuperação dos animais, realizando alimentação, higiene, administração de medicações e manutenção de acessos venosos. Atualizava prontuários e prestava suporte em consultas, cirurgias, organização de materiais e rotina de banho e tosa.'
+            }
         ];
+
         let currentExperienceIndex = 0;
         const experienceCardContainer = document.getElementById('experience-card-container');
         const prevExperienceBtn = document.getElementById('prev-experience-btn');
         const nextExperienceBtn = document.getElementById('next-experience-btn');
+        const expJourneyNextSectionBtn = document.getElementById('exp-journey-next-section-btn');
 
         function updateExperienceCard(index) {
             const exp = experiences[index];
-            experienceCardContainer.innerHTML = `<div class="terminal-card"><p class="line1"><span class="text-cyan-400">&gt; load_xp(</span><span class="text-green-300">'${exp.title}'</span><span class="text-cyan-400">);</span></p><p class="line2"><span class="text-purple-300">...</span> LOCAL: ${exp.local}</p><p class="line3"><span class="text-purple-300">...</span> PERÍODO: ${exp.period}</p><p class="line4 text-gray-300"><span class="text-purple-300">...</span> LOG: ${exp.log}</p></div>`;
+            experienceCardContainer.innerHTML = `
+                <div class="terminal-card">
+                    <p class="line1"><span class="text-cyan-400">&gt; load_xp(</span><span class="text-green-300">'${exp.title}'</span><span class="text-cyan-400">);</span></p>
+                    <p class="line2"><span class="text-purple-300">...</span> LOCAL: ${exp.local}</p>
+                    <p class="line3"><span class="text-purple-300">...</span> PERÍODO: ${exp.period}</p>
+                    <p class="line4 text-gray-300"><span class="text-purple-300">...</span> LOG: ${exp.log}</p>
+                </div>
+            `;
             setTimeout(() => {
-                experienceCardContainer.querySelector('.terminal-card')?.classList.add('visible');
+                experienceCardContainer.querySelector('.terminal-card').classList.add('visible');
             }, 100);
         }
+
         function showExperience(index) {
             if (index >= 0 && index < experiences.length) {
                 currentExperienceIndex = index;
@@ -897,287 +987,51 @@
                 updateNavigationButtons();
             }
         }
+
         function updateNavigationButtons() {
-            prevExperienceBtn.disabled = currentExperienceIndex === 0;
-            prevExperienceBtn.classList.toggle('opacity-50', currentExperienceIndex === 0);
-            prevExperienceBtn.classList.toggle('cursor-not-allowed', currentExperienceIndex === 0);
-            nextExperienceBtn.disabled = currentExperienceIndex === experiences.length - 1;
-            nextExperienceBtn.classList.toggle('opacity-50', currentExperienceIndex === experiences.length - 1);
-            nextExperienceBtn.classList.toggle('cursor-not-allowed', currentExperienceIndex === experiences.length - 1);
+            if (currentExperienceIndex === 0) {
+                prevExperienceBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                prevExperienceBtn.disabled = true;
+            } else {
+                prevExperienceBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                prevExperienceBtn.disabled = false;
+            }
+
+            if (currentExperienceIndex === experiences.length - 1) {
+                nextExperienceBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                nextExperienceBtn.disabled = true;
+                expJourneyNextSectionBtn.classList.remove('hidden');
+            } else {
+                nextExperienceBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                nextExperienceBtn.disabled = false;
+                expJourneyNextSectionBtn.classList.add('hidden');
+            }
         }
-        prevExperienceBtn.addEventListener('click', () => showExperience(currentExperienceIndex - 1));
-        nextExperienceBtn.addEventListener('click', () => showExperience(currentExperienceIndex + 1));
-        
-        // --- LÓGICA DO JOGO ---
-        const gameCanvas = document.getElementById('game-canvas');
-        const ctx = gameCanvas.getContext('2d');
-        const scoreboardDiv = document.getElementById('scoreboard');
-        const gameOverScreen = document.getElementById('game-over-screen');
-        const preGameContainer = document.getElementById('pre-game-container');
-        const balloonContainer = document.getElementById('balloon-container');
 
-        let isGameActive = false;
-        let animationFrameId;
-
-        // ** ADICIONE OS CAMINHOS PARA SUAS IMAGENS AQUI **
-        const rocketImage = new Image();
-        rocketImage.src = 'foguetee.png'; // <-- TROQUE A IMAGEM PARA UM GIF AQUI
-        
-        const logoImageSources = [
-            'zebuembryo.png', // Caminho para a imagem 1
-            'genex.png', // Caminho para a imagem 2
-            'ABS.png', // Caminho para a imagem 3
-            'copia.png'  // Caminho para a imagem 4
-        ];
-        const logoImages = logoImageSources.map(src => {
-            const img = new Image();
-            img.src = src;
-            return img;
+        prevExperienceBtn.addEventListener('click', () => {
+            if (soundEnabled) {
+                const now = Tone.context.currentTime;
+                const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
+                pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
+                lastSoundTime = nextScheduledTime;
+            }
+            if (currentExperienceIndex > 0) {
+                showExperience(currentExperienceIndex - 1);
+            }
         });
 
-        // Game state variables
-        let player, projectiles, enemies, particles, score, shootInterval, spawnTimeout;
-
-        class Player {
-            constructor(x, y, width, height, image) {
-                this.x = x;
-                this.y = y;
-                this.width = width;
-                this.height = height;
-                this.image = image;
+        nextExperienceBtn.addEventListener('click', () => {
+            if (soundEnabled) {
+                const now = Tone.context.currentTime;
+                const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
+                pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
+                lastSoundTime = nextScheduledTime;
             }
-            draw() {
-                if (this.image.complete && this.image.naturalHeight !== 0) {
-                    ctx.drawImage(this.image, this.x - this.width / 2, this.y, this.width, this.height);
-                } else { // Fallback if image fails to load
-                    ctx.fillStyle = 'white';
-                    ctx.fillRect(this.x - this.width / 2, this.y, this.width, this.height);
-                }
+            if (currentExperienceIndex < experiences.length - 1) {
+                showExperience(currentExperienceIndex + 1);
             }
-        }
-
-        class Projectile {
-            constructor(x, y, radius, color, velocity) {
-                this.x = x;
-                this.y = y;
-                this.radius = radius;
-                this.color = color;
-                this.velocity = velocity;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            }
-            update() {
-                this.draw();
-                this.y += this.velocity.y;
-            }
-        }
-        
-        class Enemy {
-             constructor(x, y, radius, velocity, image, imageSrc) {
-                this.x = x;
-                this.y = y;
-                this.radius = radius;
-                this.velocity = velocity;
-                this.image = image;
-                this.imageSrc = imageSrc;
-            }
-            draw() {
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.fill();
-                if (this.image.complete && this.image.naturalHeight !== 0) {
-                    ctx.clip();
-                    ctx.drawImage(this.image, this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2);
-                }
-                ctx.restore();
-            }
-            update() {
-                this.draw();
-                this.x += this.velocity.x;
-                this.y += this.velocity.y;
-            }
-        }
-
-        function initGame() {
-            isGameActive = true;
-            preGameContainer.style.display = 'none';
-            balloonContainer.style.display = 'none';
-            gameCanvas.style.display = 'block';
-            scoreboardDiv.style.display = 'block';
-            
-            gameCanvas.width = window.innerWidth;
-            gameCanvas.height = window.innerHeight;
-
-            player = new Player(gameCanvas.width / 2, gameCanvas.height - 70, 60, 60, rocketImage);
-            projectiles = [];
-            enemies = [];
-            particles = [];
-            score = {};
-            logoImageSources.forEach(src => score[src] = 0);
-
-            updateScoreboard();
-
-            shootInterval = setInterval(() => {
-                if (isGameActive) {
-                    projectiles.push(new Projectile(player.x, player.y, 5, 'cyan', { y: -10 }));
-                }
-            }, 150);
-
-            spawnLoop();
-
-            animate();
-        }
-        
-        function spawnLoop() {
-            if (!isGameActive) return;
-            const totalScore = Object.values(score).reduce((a, b) => a + b, 0);
-            const spawnDelay = Math.max(200, 700 - totalScore * 10); // Diminui o tempo de spawn com a pontuação
-            
-            spawnEnemy();
-
-            spawnTimeout = setTimeout(spawnLoop, spawnDelay);
-        }
-
-        function spawnEnemy() {
-            const radius = Math.random() * (40 - 20) + 20;
-            const x = Math.random() * gameCanvas.width;
-            const y = 0 - radius;
-            
-            const totalScore = Object.values(score).reduce((a, b) => a + b, 0);
-            const speed = (Math.random() * 2 + 3.5) + (totalScore * 0.05); // Aumenta a velocidade com a pontuação
-            const velocity = { x: 0, y: speed }; 
-            
-            const logoIndex = Math.floor(Math.random() * logoImages.length);
-            const image = logoImages[logoIndex];
-            const imageSrc = logoImageSources[logoIndex];
-            
-            enemies.push(new Enemy(x, y, radius, velocity, image, imageSrc));
-        }
-
-        function updateScoreboard() {
-            scoreboardDiv.innerHTML = '';
-            logoImageSources.forEach(src => {
-                const scoreItem = document.createElement('div');
-                scoreItem.className = 'score-item';
-                scoreItem.innerHTML = `
-                    <img src="${src}" class="score-logo" alt="logo">
-                    <span>${score[src]}</span>
-                `;
-                scoreboardDiv.appendChild(scoreItem);
-            });
-        }
-        
-        function animate() {
-            if (!isGameActive) return;
-            animationFrameId = requestAnimationFrame(animate);
-            ctx.fillStyle = 'rgba(10, 10, 26, 0.3)';
-            ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
-            player.draw();
-
-            projectiles.forEach((p, pIndex) => {
-                p.update();
-                if (p.y + p.radius < 0) {
-                    setTimeout(() => projectiles.splice(pIndex, 1), 0);
-                }
-            });
-
-            enemies.forEach((enemy, eIndex) => {
-                enemy.update();
-                
-                if(enemy.y - enemy.radius > gameCanvas.height) {
-                    gameOver();
-                }
-
-                projectiles.forEach((projectile, pIndex) => {
-                    const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
-                    if (dist - enemy.radius - projectile.radius < 1) {
-                        for(let i = 0; i < enemy.radius * 2; i++) {
-                           createParticle(projectile.x, projectile.y);
-                        }
-                        
-                        score[enemy.imageSrc]++;
-                        updateScoreboard();
-
-                        setTimeout(() => {
-                            enemies.splice(eIndex, 1);
-                            projectiles.splice(pIndex, 1);
-                        }, 0);
-                    }
-                });
-            });
-        }
-
-        function gameOver() {
-            isGameActive = false;
-            cancelAnimationFrame(animationFrameId);
-            clearInterval(shootInterval);
-            clearTimeout(spawnTimeout);
-            gameOverScreen.style.display = 'flex';
-            setTimeout(() => {
-                window.location.reload();
-            }, 3000);
-        }
-
-        window.addEventListener('mousemove', (e) => {
-            if (player) player.x = e.clientX;
         });
-        window.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-        }, { passive: false });
-        window.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            if (player && e.touches.length > 0) player.x = e.touches[0].clientX;
-        }, { passive: false });
 
-        const preGameBalloonInterval = setInterval(() => {
-            if (!isGameActive) createPreGameBalloon();
-        }, 1000);
-
-        function createPreGameBalloon() {
-            if (document.hidden) return;
-            const balloon = document.createElement('div');
-            balloon.className = 'balloon';
-
-            const logoIndex = Math.floor(Math.random() * logoImages.length);
-            const logoImg = document.createElement('img');
-            logoImg.src = logoImageSources[logoIndex];
-            logoImg.alt = 'Logotipo flutuante';
-            balloon.appendChild(logoImg);
-
-            balloon.style.left = `${Math.random() * 90}%`;
-            balloon.style.animation = `float-up ${Math.random() * 7 + 8}s linear infinite`;
-            balloon.style.animationDelay = `${Math.random() * 5}s`;
-            
-            balloon.addEventListener('click', () => {
-                if (!isGameActive) {
-                    if (soundEnabled) pluckSynth.triggerAttackRelease('G5', '8n');
-                    clearInterval(preGameBalloonInterval);
-                    document.querySelectorAll('.balloon').forEach(b => b.remove());
-                    initGame();
-                }
-            }, { once: true });
-            
-            balloonContainer.appendChild(balloon);
-        }
-
-        function createParticle(x, y) {
-            const particle = document.createElement('div');
-            particle.className = 'explosion-particle';
-            particle.style.left = `${x}px`;
-            particle.style.top = `${y}px`;
-            const angle = Math.random() * 360;
-            const distance = Math.random() * 80 + 50;
-            particle.style.setProperty('--x', `${Math.cos(angle * Math.PI / 180) * distance}px`);
-            particle.style.setProperty('--y', `${Math.sin(angle * Math.PI / 180) * distance}px`);
-            document.body.appendChild(particle);
-            particle.addEventListener('animationend', () => particle.remove());
-        }
     });
     </script>
 </body>
