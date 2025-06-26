@@ -1383,10 +1383,10 @@
         let gameRunning = false;
         let score = {};
         let totalScore = 0;
-        let fallSpeed = 4; // UPDATED: Faster initial fall speed
+        let fallSpeed = 2.5; // Initial fall speed
         let gameLoopId, shootIntervalId, targetSpawnInterval, gameOverTimeoutId;
         let player, gameScoreArea, totalScoreDisplay, detailedScoreDisplay, projectilesContainer, targetsContainer, gameArea, gameOverScreen;
-        let targetSpawnRate = 1700; // Faster spawn rate
+        let targetSpawnRate = 800; // Time in ms between spawns
 
         function setupGameDOM() {
             gameView.innerHTML = `
@@ -1425,7 +1425,8 @@
         function initializeScores() {
             score = {};
             totalScore = 0;
-            fallSpeed = 4; // Reset fall speed on new game
+            fallSpeed = 2.5; // Reset fall speed on new game
+            targetSpawnRate = 800; // Reset spawn rate
             LOGO_DATA.forEach(logo => {
                 score[logo.id] = 0;
             });
@@ -1560,13 +1561,24 @@
             const logoData = LOGO_DATA[Math.floor(Math.random() * LOGO_DATA.length)];
             target.dataset.logoId = logoData.id;
             
-            // The hardcoded value here (70) refers to the desktop size. 
-            // On mobile, this just means targets won't spawn at the very edge of the screen, which is acceptable.
-            // The JS for movement and collision detection correctly uses offsetWidth/getBoundingClientRect, so it works fine.
             target.style.left = `${Math.random() * (gameArea.offsetWidth - 70)}px`;
             target.innerHTML = `<img src="${logoData.src}" alt="${logoData.id}">`;
             targetsContainer.appendChild(target);
         }
+        
+        function updateDifficulty() {
+            // Increase fall speed based on score
+            fallSpeed = 2.5 + (totalScore / 50); // Increases speed more noticeably
+
+            // Decrease spawn rate to make balloons appear faster
+            const newSpawnRate = 800 - (totalScore * 2);
+            targetSpawnRate = Math.max(200, newSpawnRate); // Set a minimum spawn rate
+
+            // Clear and reset the spawn interval with the new rate
+            clearInterval(targetSpawnInterval);
+            targetSpawnInterval = setInterval(spawnFallingBalloon, targetSpawnRate);
+        }
+
 
         function gameLoop() {
             if (!gameRunning) return;
@@ -1602,10 +1614,7 @@
                             totalScore += 10;
                        }
                        
-                       // UPDATED: Faster difficulty progression
-                       if (totalScore > 0 && totalScore % 40 === 0 && fallSpeed < 12) {
-                            fallSpeed += 0.5;
-                       }
+                       updateDifficulty(); // Update difficulty on each successful hit
 
                        t.remove();
                        p.remove();
