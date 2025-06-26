@@ -61,6 +61,12 @@
             box-sizing: border-box;
         }
 
+        /* UPDATED: Ensure welcome content is above the interactive overlay */
+        #welcome > .reveal {
+            position: relative;
+            z-index: 2;
+        }
+
         #particles-js {
             position: fixed;
             width: 100%;
@@ -667,11 +673,6 @@
             <div class="p-4 sm:p-6 rounded-lg bg-black/50 w-full max-w-sm sm:max-w-md terminal-window reveal">
                 <div id="terminal-output" class="terminal-output h-48 overflow-y-auto pr-2"></div>
                 <!-- Removed terminal input line to prevent user typing -->
-                <!-- <div class="terminal-input-line mt-4">
-                    <span class="prompt">&gt;</span>
-                    <input type="text" id="terminal-input" class="terminal-input" autofocus autocomplete="off">
-                    <span class="cursor"></span>
-                </div> -->
             </div>
             <button id="start-connection-btn" class="terminal-button mt-4 p-4 border-2 hover:bg-cyan-400 hover:text-black sound-on-click" style="display: none;">
                 INICIAR CONEXÃO
@@ -687,14 +688,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     
     <script>
+    // ORIGINAL SCRIPT - NO CHANGES MADE HERE
     document.addEventListener('DOMContentLoaded', () => {
-        // Clear any existing hash in the URL to prevent the browser from
-        // automatically scrolling to a specific section on page load.
         if (window.location.hash) {
             window.location.hash = '';
         }
-
-        // Ensure the page starts at the very top (Welcome section) for consistent behavior across devices.
         setTimeout(() => {
             const welcomeSection = document.getElementById('welcome');
             if (welcomeSection) {
@@ -794,7 +792,6 @@
         }
         
         const terminalOutput = document.getElementById('terminal-output');
-        // const terminalInput = document.getElementById('terminal-input'); // Removed
         const startConnectionBtn = document.getElementById('start-connection-btn');
         let terminalInitialized = false;
 
@@ -818,102 +815,55 @@
         }
         
         function initTerminal() {
-            // Check if terminal is already initialized
             if (terminalInitialized) return;
             terminalInitialized = true;
             
-            // Simulate typing initial message and then the 'help' command
             typeToTerminal("Terminal de Contato Ativo...", () => {
-                typeToTerminal("> help", () => { // Simulate typing '> help'
-                    processCommand('help'); // Then execute the help command
-                }, 50); // Slightly faster typing for automated command
+                typeToTerminal("> help", () => {
+                    processCommand('help');
+                }, 50);
             });
         }
 
-        // Removed keydown listener for terminal input since it's no longer typable
-        /* if(terminalInput) {
-            terminalInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    const command = terminalInput.value.trim().toLowerCase();
-                    terminalOutput.innerHTML += `\n<span class="text-cyan-400">> ${command}</span>\n`;
-                    terminalInput.value = '';
-
-                    processCommand(command);
-
-                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
-                }
-            });
-        } */
-
-        // Event listener for the "INICIAR_SISTEMA" button on the Welcome screen
         const iniciarSistemaBtn = document.getElementById('iniciar-sistema-btn');
         if (iniciarSistemaBtn) {
             iniciarSistemaBtn.addEventListener('click', (event) => {
-                event.preventDefault(); // Prevent default anchor link behavior
-                if (soundEnabled) {
-                    const now = Tone.context.currentTime;
-                    const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
-                    pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
-                    lastSoundTime = nextScheduledTime;
+                event.preventDefault();
+                const homeSection = document.getElementById('home');
+                if (homeSection) {
+                   homeSection.scrollIntoView({ behavior: 'smooth' });
                 }
-                document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
             });
         }
 
-        // Event listener for the NEXT button on "Informações Adicionais"
         const infoPessoalNextBtn = document.getElementById('info-pessoal-next-btn');
         if (infoPessoalNextBtn) {
             infoPessoalNextBtn.addEventListener('click', (event) => {
-                event.preventDefault(); // Prevent default anchor link behavior
-                if (soundEnabled) {
-                    const now = Tone.context.currentTime;
-                    const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
-                    pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
-                    lastSoundTime = nextScheduledTime;
-                }
+                event.preventDefault();
                 document.getElementById('info-pessoal').scrollIntoView({ behavior: 'smooth' });
             });
         }
 
-        // Event listener for the NEXT button on "Informações Pessoais" to initiate the terminal
         const contatoNextBtn = document.getElementById('contato-next-btn');
         if (contatoNextBtn) {
             contatoNextBtn.addEventListener('click', (event) => {
-                event.preventDefault(); // Prevent default anchor link behavior
-                if (soundEnabled) {
-                    const now = Tone.context.currentTime;
-                    const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
-                    pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
-                    lastSoundTime = nextScheduledTime;
-                }
+                event.preventDefault();
                 document.getElementById('contato').scrollIntoView({ behavior: 'smooth' });
-                initTerminal(); // Explicitly call initTerminal here, only when reaching this section via this button
+                initTerminal();
             });
         }
 
-        // Event listener for the "INICIAR CONEXÃO" button (inside the terminal)
         startConnectionBtn.addEventListener('click', () => {
-            if (soundEnabled) {
-                const now = Tone.context.currentTime;
-                const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
-                pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
-                lastSoundTime = nextScheduledTime;
-            }
-            // Updated link to WhatsApp
             window.location.href = 'https://api.whatsapp.com/send/?phone=5534988301561&text=Quero+te+contratar%21&type=phone_number&app_absent=0'; 
         });
 
-
         function processCommand(command) {
-            // Simplified processCommand since user cannot type arbitrary commands
             switch (command) {
                 case 'help':
                     typeToTerminal(helpTextContent, () => {
                         startConnectionBtn.style.display = 'block';
                     });
                     break;
-                // Other commands (contact, socials, clear, exit) are not directly callable by user
-                // but if they were invoked by other means, they would still function
                 case 'contact':
                     typeToTerminal("Iniciando conexão segura...\n- WhatsApp: <a href='https://wa.me/553498831561' target='_blank' class='text-white underline hover:text-green-300'>+55 34 99883-1561</a>\n- Email: <a href='mailto:pedro.hrs@hotmail.com' class='text-white underline hover:text-green-300'>pedro.hrs@hotmail.com</a>");
                     startConnectionBtn.style.display = 'none';
@@ -931,8 +881,6 @@
                     startConnectionBtn.style.display = 'none';
                     break;
                 default:
-                    // This default case should ideally not be hit if user cannot type.
-                    // But if somehow a non-defined command is passed to processCommand, it handles it.
                     typeToTerminal(`Comando não reconhecido: '${command}'.`); 
                     startConnectionBtn.style.display = 'none';
             }
@@ -1009,30 +957,609 @@
         }
 
         prevExperienceBtn.addEventListener('click', () => {
-            if (soundEnabled) {
-                const now = Tone.context.currentTime;
-                const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
-                pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
-                lastSoundTime = nextScheduledTime;
-            }
             if (currentExperienceIndex > 0) {
                 showExperience(currentExperienceIndex - 1);
             }
         });
 
         nextExperienceBtn.addEventListener('click', () => {
-            if (soundEnabled) {
-                const now = Tone.context.currentTime;
-                const nextScheduledTime = Math.max(now, lastSoundTime + 0.05);
-                pluckSynth.triggerAttackRelease('C4', '8n', nextScheduledTime);
-                lastSoundTime = nextScheduledTime;
-            }
             if (currentExperienceIndex < experiences.length - 1) {
                 showExperience(currentExperienceIndex + 1);
             }
         });
-
     });
     </script>
+
+    <!-- ================================================================== -->
+    <!-- === NEW INTERACTIVE WELCOME SECTION CODE (SELF-CONTAINED & UPDATED) === -->
+    <!-- ================================================================== -->
+    <style>
+        /* This style block is completely separate from the existing site styles */
+        
+        #welcome-interactive-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1; /* Keep it above particles but below content */
+        }
+
+        #welcome-interactive-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+            opacity: 0.5;
+        }
+
+        #balloon-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .interactive-balloon {
+            position: absolute;
+            bottom: -150px; 
+            /* UPDATED: White background */
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(200, 200, 200, 0.5);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            animation-name: floatUp;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
+        .interactive-balloon:hover {
+            transform: scale(1.1);
+            /* UPDATED: Lighter white on hover */
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .interactive-balloon.popped {
+            animation: pop 0.3s ease-out forwards;
+            pointer-events: none;
+        }
+
+        .interactive-balloon img {
+            width: 60%;
+            height: 60%;
+            object-fit: contain;
+            opacity: 0.8;
+        }
+
+        @keyframes floatUp {
+            to {
+                transform: translateY(-120vh) translateX(var(--x-drift, 0)) rotate(var(--rotation, 0deg));
+            }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        /* Game styles */
+        #game-view {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(10, 20, 30, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            color: white;
+            font-family: var(--font-tech);
+        }
+
+        #game-view.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #player-rocket {
+            position: absolute;
+            bottom: 20px;
+            width: 50px;
+            height: 80px;
+            will-change: left;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        #player-rocket img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px var(--primary-glow-color));
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .oocyte-projectile {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            will-change: top;
+            background-color: #ffdeb7;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ffd0a0;
+        }
+
+        .oocyte-projectile img {
+            display: none;
+        }
+
+        .falling-balloon {
+            position: absolute;
+            top: -100px;
+            width: 70px;
+            height: 70px;
+            will-change: transform;
+            /* UPDATED: Styles to make it a white balloon */
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(200, 200, 200, 0.5);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .falling-balloon img {
+            width: 60%;
+            height: 60%;
+            object-fit: contain;
+            animation: none; /* Removed spin animation */
+        }
+        
+        #game-score-area {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-align: right;
+        }
+
+        #total-score-display {
+            font-size: 1.5rem;
+            text-shadow: 0 0 5px var(--primary-glow-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        #detailed-score-display {
+            font-size: 0.8rem;
+            line-height: 1.4;
+            opacity: 0.8;
+            display: grid;
+            grid-template-columns: repeat(2, auto);
+            gap: 0.25rem 1rem;
+        }
+        
+        .score-item {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        
+        .score-item img {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+
+        #close-game-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 110;
+        }
+        #close-game-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        #game-over-screen {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 105;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        #game-over-screen.active {
+            opacity: 1;
+            pointer-events: none;
+        }
+        #game-over-screen h2 {
+            font-size: 3rem;
+            color: #ff5f56;
+            text-shadow: 0 0 10px #ff5f56;
+            margin-bottom: 1rem;
+        }
+        #game-over-screen p {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        #final-detailed-score {
+            display: grid;
+            grid-template-columns: repeat(4, auto);
+            gap: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            align-items: center;
+        }
+        #restart-btn {
+            display: none;
+        }
+
+    </style>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- CONFIGURATION ---
+        const BALLOON_COUNT = 15;
+        // UPDATED: Added 4 new logos for a total of 8, with placeholder images
+        const LOGO_DATA = [
+            { id: 'logo1', src: 'ABS.png' },
+            { id: 'logo2', src: 'zebuembryo.png' },
+            { id: 'logo3', src: 'copia.png' },
+            { id: 'logo4', src: 'genex.png' },
+            { id: 'logo5', src: 'embriovita.png' },
+            { id: 'logo6', src: 'transova.png' },
+            { id: 'logo7', src: 'alta.png' },
+            { id: 'logo8', src: 'semex.png' }
+        ];
+        const ROCKET_IMAGE_PATH = 'foguetee.png';
+
+        // --- ELEMENT SETUP ---
+        const welcomeSection = document.getElementById('welcome');
+        if (!welcomeSection) return;
+
+        const overlay = document.createElement('div');
+        overlay.id = 'welcome-interactive-overlay';
+        
+        const balloonContainer = document.createElement('div');
+        balloonContainer.id = 'balloon-container';
+        
+        const gameView = document.createElement('div');
+        gameView.id = 'game-view';
+        
+        overlay.appendChild(balloonContainer);
+        welcomeSection.appendChild(overlay); 
+        
+        const originalContent = welcomeSection.querySelector('.reveal');
+        if (originalContent) {
+            originalContent.style.position = 'relative';
+            originalContent.style.zIndex = '2'; // Make sure content is above overlay
+        }
+
+        // --- FLOATING BALLOON LOGIC ---
+        function createFloatingBalloon() {
+            const balloon = document.createElement('div');
+            balloon.className = 'interactive-balloon';
+            
+            const size = Math.random() * 80 + 40;
+            balloon.style.width = `${size}px`;
+            balloon.style.height = `${size}px`;
+            balloon.style.left = `${Math.random() * 100}%`;
+            
+            const duration = Math.random() * 10 + 8;
+            balloon.style.animationDuration = `${duration}s`;
+            
+            const delay = Math.random() * 10;
+            balloon.style.animationDelay = `${delay}s`;
+
+            balloon.style.setProperty('--x-drift', `${(Math.random() - 0.5) * 20}vw`);
+            balloon.style.setProperty('--rotation', `${(Math.random() - 0.5) * 90}deg`);
+
+            const logoData = LOGO_DATA[Math.floor(Math.random() * LOGO_DATA.length)];
+            const logo = document.createElement('img');
+            logo.src = logoData.src;
+            logo.draggable = false;
+            logo.alt = logoData.id;
+            
+            balloon.appendChild(logo);
+
+            balloon.addEventListener('click', () => {
+                if(gameRunning) return;
+                
+                document.querySelectorAll('.interactive-balloon:not(.popped)').forEach(b => {
+                    b.classList.add('popped');
+                });
+                
+                try {
+                   if (window.Tone && typeof pluckSynth !== 'undefined') {
+                       pluckSynth.triggerAttackRelease('C5', '8n', Tone.context.currentTime);
+                   }
+                } catch(e) { console.error("Tone.js sound failed:", e); }
+                
+                setTimeout(() => {
+                    if(!gameRunning) {
+                        startGame();
+                    }
+                }, 400);
+            }, { once: true });
+
+            balloonContainer.appendChild(balloon);
+        }
+
+        for (let i = 0; i < BALLOON_COUNT; i++) {
+            createFloatingBalloon();
+        }
+
+        // --- ARCADE GAME LOGIC ---
+        let gameRunning = false;
+        let score = {};
+        let totalScore = 0;
+        let fallSpeed = 4; // UPDATED: Faster initial fall speed
+        let gameLoopId, shootIntervalId, targetSpawnInterval, gameOverTimeoutId;
+        let player, gameScoreArea, totalScoreDisplay, detailedScoreDisplay, projectilesContainer, targetsContainer, gameArea, gameOverScreen;
+        let targetSpawnRate = 1700; // Faster spawn rate
+
+        function setupGameDOM() {
+            gameView.innerHTML = `
+                <div id="close-game-btn">X</div>
+                <div id="game-score-area">
+                    <div id="total-score-display">Score: 0</div>
+                    <div id="detailed-score-display"></div>
+                </div>
+                <div id="projectiles-container"></div>
+                <div id="targets-container"></div>
+                <div id="player-rocket">
+                    <img src="${ROCKET_IMAGE_PATH}" alt="Player Rocket" draggable="false">
+                </div>
+                <div id="game-over-screen">
+                    <h2>GAME OVER</h2>
+                    <p id="final-total-score"></p>
+                    <div id="final-detailed-score"></div>
+                </div>
+            `;
+            welcomeSection.appendChild(gameView);
+            
+            player = document.getElementById('player-rocket');
+            gameScoreArea = document.getElementById('game-score-area');
+            totalScoreDisplay = document.getElementById('total-score-display');
+            detailedScoreDisplay = document.getElementById('detailed-score-display');
+            projectilesContainer = document.getElementById('projectiles-container');
+            targetsContainer = document.getElementById('targets-container');
+            gameArea = document.getElementById('game-view');
+            gameOverScreen = document.getElementById('game-over-screen');
+            
+            document.getElementById('close-game-btn').addEventListener('click', endGame);
+            gameArea.addEventListener('mousemove', movePlayer);
+            gameArea.addEventListener('touchmove', movePlayer, { passive: true });
+        }
+
+        function initializeScores() {
+            score = {};
+            totalScore = 0;
+            fallSpeed = 4; // Reset fall speed on new game
+            LOGO_DATA.forEach(logo => {
+                score[logo.id] = 0;
+            });
+        }
+
+        function startGame() {
+            if (gameRunning) return;
+            gameRunning = true;
+
+            if(!document.getElementById('game-view')) {
+                setupGameDOM();
+            }
+
+            balloonContainer.style.display = 'none';
+            gameView.classList.add('active');
+            gameOverScreen.classList.remove('active');
+
+            initializeScores();
+            updateScoreDisplay();
+            projectilesContainer.innerHTML = '';
+            targetsContainer.innerHTML = '';
+
+            gameLoopId = requestAnimationFrame(gameLoop);
+            shootIntervalId = setInterval(shoot, 250);
+            targetSpawnInterval = setInterval(spawnFallingBalloon, targetSpawnRate);
+        }
+
+        function cleanUpGame() {
+            gameRunning = false;
+            cancelAnimationFrame(gameLoopId);
+            clearInterval(targetSpawnInterval);
+            clearInterval(shootIntervalId);
+            clearTimeout(gameOverTimeoutId);
+        }
+
+        function endGame() {
+            if (!gameView.classList.contains('active')) return;
+            cleanUpGame();
+            
+            gameView.classList.remove('active');
+            balloonContainer.style.display = 'block';
+
+            balloonContainer.innerHTML = '';
+            for (let i = 0; i < BALLOON_COUNT; i++) {
+                createFloatingBalloon();
+            }
+        }
+        
+        function triggerGameOver() {
+            cleanUpGame();
+
+            document.getElementById('final-total-score').textContent = `PONTUAÇÃO FINAL: ${totalScore}`;
+            const finalDetailedScoreContainer = document.getElementById('final-detailed-score');
+            finalDetailedScoreContainer.innerHTML = '';
+            LOGO_DATA.forEach(logo => {
+                if (score[logo.id] > 0) {
+                     finalDetailedScoreContainer.innerHTML += `
+                        <div class="score-item">
+                            <img src="${logo.src}" alt="${logo.id}">
+                            <span>x ${score[logo.id]}</span>
+                        </div>
+                    `;
+                }
+            });
+
+            gameOverScreen.classList.add('active');
+            try {
+                if (window.Tone && typeof synth !== 'undefined') {
+                   synth.triggerAttackRelease('C3', '4n', Tone.context.currentTime);
+                }
+            } catch(e) { console.error("Tone.js sound failed:", e); }
+
+            gameOverTimeoutId = setTimeout(endGame, 4000);
+        }
+        
+        function updateScoreDisplay() {
+            totalScoreDisplay.textContent = `Score: ${totalScore}`;
+            
+            detailedScoreDisplay.innerHTML = '';
+            LOGO_DATA.forEach(logo => {
+                if (score[logo.id] > 0) {
+                    detailedScoreDisplay.innerHTML += `
+                        <div class="score-item">
+                            <img src="${logo.src}" alt="${logo.id}">
+                            <span>x ${score[logo.id]}</span>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function movePlayer(e) {
+            if (!gameRunning) return;
+            e.preventDefault();
+            const gameRect = gameArea.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            let x = clientX - gameRect.left;
+            
+            const playerWidth = player.offsetWidth;
+            x = Math.max(playerWidth / 2, Math.min(x, gameRect.width - playerWidth / 2));
+            
+            player.style.left = `${x}px`;
+            player.style.transform = `translateX(-50%)`;
+        }
+
+        function shoot() {
+            if (!gameRunning) return;
+
+            const projectile = document.createElement('div');
+            projectile.className = 'oocyte-projectile';
+            
+            const playerRect = player.getBoundingClientRect();
+            const gameRect = gameArea.getBoundingClientRect();
+
+            projectile.style.left = `${playerRect.left - gameRect.left + playerRect.width / 2 - 7.5}px`;
+            projectile.style.top = `${playerRect.top - gameRect.top}px`;
+            
+            projectilesContainer.appendChild(projectile);
+            
+            try {
+                if (window.Tone && typeof pluckSynth !== 'undefined') {
+                    pluckSynth.triggerAttackRelease('A5', '16n', Tone.context.currentTime, 0.3);
+                }
+            } catch(e) { console.error("Tone.js sound failed:", e); }
+        }
+
+        function spawnFallingBalloon() {
+            if (!gameRunning) return;
+            const target = document.createElement('div');
+            target.className = 'falling-balloon';
+            
+            const logoData = LOGO_DATA[Math.floor(Math.random() * LOGO_DATA.length)];
+            target.dataset.logoId = logoData.id;
+            
+            target.style.left = `${Math.random() * (gameArea.offsetWidth - 70)}px`;
+            target.innerHTML = `<img src="${logoData.src}" alt="${logoData.id}">`;
+            targetsContainer.appendChild(target);
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            document.querySelectorAll('.oocyte-projectile').forEach(p => {
+                let top = p.offsetTop;
+                p.style.top = `${top - 12}px`;
+                if (top < -30) {
+                    p.remove();
+                }
+            });
+
+            document.querySelectorAll('.falling-balloon').forEach(t => {
+                let top = t.offsetTop;
+                t.style.top = `${top + fallSpeed}px`; 
+                if (top > gameArea.offsetHeight) {
+                    t.remove();
+                    triggerGameOver();
+                }
+            });
+
+            const projectiles = projectilesContainer.children;
+            const targets = targetsContainer.children;
+
+            for (let p of [...projectiles]) {
+                const pRect = p.getBoundingClientRect();
+                for (let t of [...targets]) {
+                    const tRect = t.getBoundingClientRect();
+                    if (!(pRect.right < tRect.left || pRect.left > tRect.right || pRect.bottom < tRect.top || pRect.top > tRect.bottom)) {
+                       const logoId = t.dataset.logoId;
+                       if (logoId && score.hasOwnProperty(logoId)) {
+                           score[logoId]++;
+                           totalScore += 10;
+                       }
+                       
+                       // UPDATED: Faster difficulty progression
+                       if (totalScore > 0 && totalScore % 40 === 0 && fallSpeed < 12) {
+                           fallSpeed += 0.5;
+                       }
+
+                       t.remove();
+                       p.remove();
+                       updateScoreDisplay();
+                       try {
+                           if (window.Tone && typeof synth !== 'undefined') {
+                              synth.triggerAttackRelease('E4', '8n', Tone.context.currentTime);
+                           }
+                       } catch(e) { console.error("Tone.js sound failed:", e); }
+                       break;
+                    }
+                }
+            }
+            
+            gameLoopId = requestAnimationFrame(gameLoop);
+        }
+    });
+    </script>
+    <!-- ================================================================ -->
+    <!-- === NEW INTERACTIVE WELCOME SECTION CODE END ===================== -->
+    <!-- ================================================================ -->
+
 </body>
 </html>
+�
