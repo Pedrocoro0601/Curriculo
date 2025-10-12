@@ -13,6 +13,7 @@
             --primary-glow-color: rgba(0, 255, 255, 0.7);
             --secondary-glow-color: rgba(191, 0, 255, 0.7);
             --success-glow-color: rgba(57, 255, 20, 0.7);
+            --danger-glow-color: rgba(255, 95, 86, 0.8);
             --bg-color: #0a0a1a;
             --font-tech: 'Space Mono', monospace;
         }
@@ -61,8 +62,7 @@
             box-sizing: border-box;
         }
 
-        /* UPDATED: Ensure welcome content is above the interactive overlay */
-        #welcome > .reveal {
+        #welcome > .content-wrapper {
             position: relative;
             z-index: 2;
         }
@@ -91,7 +91,7 @@
 
         .next-btn {
             position: absolute;
-            bottom: 3rem; /* Default for larger screens */
+            bottom: 3rem;
             left: 50%;
             transform: translateX(-50%);
             animation: bounce-float 2.5s infinite;
@@ -102,16 +102,8 @@
             color: white;
             border-color: white;
         }
-        /* Mobile specific adjustment for next-btn */
-        @media (max-width: 768px) { /* Adjust breakpoint as needed for mobile */
-            .next-btn {
-                bottom: 8rem; /* Higher position for most mobile sections */
-            }
-            /* Specific adjustment for 'Perfil Híbrido' and 'Formação Acadêmica' */
-            #sobre-4 .next-btn,
-            #formacao .next-btn {
-                bottom: 6rem; /* Slightly lower position for these sections on mobile */
-            }
+        @media (max-width: 768px) {
+            .next-btn { bottom: 6rem; }
         }
 
         @keyframes bounce-float {
@@ -154,22 +146,21 @@
         .image-fuser img { width: 100%; height: 100%; object-fit: cover; }
         
         .image-overlay-wrapper {
-            animation: wipe-fuser 2s alternate infinite ease-in-out; /* Mais rápido */
+            animation: wipe-fuser 2s alternate infinite ease-in-out;
         }
         .horizontal-scanline {
             position: absolute; top: 0; left: 0;
             width: 3px; height: 100%;
-            background: var(--bg-color); /* Mesma cor do fundo */
-            /* box-shadow removido para simular 'corte' */
-            animation: scan-fuser 2s alternate infinite ease-in-out; /* Mais rápido */
+            background: var(--bg-color);
+            animation: scan-fuser 2s alternate infinite ease-in-out;
         }
         @keyframes wipe-fuser {
             from { clip-path: inset(0 100% 0 0); }
             to   { clip-path: inset(0 0 0 0); }
         }
         @keyframes scan-fuser {
-            from { transform: translateX(-3px); } /* Começa totalmente fora à esquerda */
-            to   { transform: translateX(163px); } /* Termina totalmente fora à direita */
+            from { transform: translateX(-3px); }
+            to   { transform: translateX(163px); }
         }
         
         .terminal-window {
@@ -183,15 +174,14 @@
             font-size: clamp(0.7rem, 2.5vw, 0.9rem);
             line-height: 1.6; text-align: left; white-space: pre-wrap; word-break: break-all;
         }
-        /* Remove terminal input line styling as it will be removed from HTML */
-        .prompt { display: none; } /* Hide the prompt if input is not there */
-        .terminal-input { display: none; } /* Hide the input field */
-        .cursor { display: none; } /* Hide the blinking cursor */
+
+        .terminal-input-container {
+            display: none; /* Hide by default, not needed for the simple terminal */
+        }
 
         .terminal-button { font-family: var(--font-tech); letter-spacing: 0.2em; transition: all 0.3s ease; border-color: var(--primary-glow-color); color: var(--primary-glow-color); }
         .terminal-button:hover { background-color: var(--primary-glow-color); color: var(--bg-color); box-shadow: 0 0 15px var(--primary-glow-color); }
         
-        /* --- General Animations --- */
         .progress-bar-container { position: relative; width: 100%; background-color: rgba(255,255,255,0.1); border-radius: 5px; height: 20px; overflow: hidden; margin-top: 0.5rem; }
         .progress-bar { width: 0; height: 100%; background-color: var(--success-glow-color); border-radius: 5px; transition: width 2s ease-out 0.8s; display: flex; align-items: center; justify-content: center; }
         .progress-bar-vet { background-color: var(--secondary-glow-color); }
@@ -215,8 +205,6 @@
         .visible .download-complete-text { opacity: 1; }
         
         /* --- Section-Specific Animations --- */
-        
-        /* FOCO EM FIV/PIVE */
         .blastocyst-svg .outer-wall { stroke: var(--primary-glow-color); filter: drop-shadow(0 0 4px var(--primary-glow-color)); animation: pulse-wall 3s infinite ease-in-out; }
         .blastocyst-svg .inner-cell { fill: var(--primary-glow-color); opacity: 0; animation: fade-in-cell 1.5s ease-out forwards; }
         .visible .blastocyst-svg .cell-1 { animation-delay: 0.5s; }
@@ -226,72 +214,36 @@
         @keyframes pulse-wall { 50% { filter: drop-shadow(0 0 12px var(--primary-glow-color)); transform: scale(1.02); } }
         @keyframes fade-in-cell { to { opacity: 0.7; } }
 
-        /* DA CLÍNICA À BIOTECNOLOGIA */
-        .ekg-line {
-            stroke-dasharray: 600; /* Comprimento aproximado do caminho */
-            stroke-dashoffset: 600;
+        .ekg-line, .circuit-board, .journey-svg .journey-path, .graph-bg {
+            stroke-dasharray: 600; stroke-dashoffset: 600;
         }
-        .visible .ekg-line {
+        .visible .ekg-line, .visible .circuit-board, .visible .journey-svg .journey-path, .visible .graph-bg {
             animation: draw-line 2s ease-out forwards;
         }
-        @keyframes draw-line {
-            to { stroke-dashoffset: 0; }
-        }
+        @keyframes draw-line { to { stroke-dashoffset: 0; } }
         
-        /* INTEGRANDO A TECNOLOGIA */
-        .circuit-board {
-            stroke-dasharray: 200; /* Comprimento aproximado do caminho */
-            stroke-dashoffset: 200;
-        }
-        .visible .circuit-board {
-            animation: draw-line 2s ease-out forwards;
-        }
-        
-        /* JORNADA */
         .terminal-card {
-            background: rgba(10, 20, 30, 0.7);
-            border: 1px solid var(--primary-glow-color);
-            backdrop-filter: blur(5px);
-            font-family: var(--font-tech);
-            text-align: left;
-            font-size: clamp(0.7rem, 2.5vw, 0.9rem);
-            padding: 1rem;
-            opacity: 0; /* Hidden by default for reveal effect */
-            transform: translateY(20px); /* Hidden by default for reveal effect */
+            background: rgba(10, 20, 30, 0.7); border: 1px solid var(--primary-glow-color);
+            backdrop-filter: blur(5px); font-family: var(--font-tech);
+            text-align: left; font-size: clamp(0.7rem, 2.5vw, 0.9rem); padding: 1rem;
+            opacity: 0; transform: translateY(20px);
             transition: opacity 0.8s ease-out, transform 0.8s ease-out;
         }
-        .terminal-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .terminal-card p {
-            opacity: 0;
-            transform: translateY(10px);
-        }
+        .terminal-card.visible { opacity: 1; transform: translateY(0); }
+        .terminal-card p { opacity: 0; transform: translateY(10px); }
         .terminal-card.visible p { animation: fade-in-up 0.5s forwards; }
         .terminal-card.visible .line2 { animation-delay: 0.2s; }
         .terminal-card.visible .line3 { animation-delay: 0.4s; }
         .terminal-card.visible .line4 { animation-delay: 0.6s; }
-        @keyframes fade-in-up {
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fade-in-up { to { opacity: 1; transform: translateY(0); } }
 
-        /* COMPETÊNCIAS */
         .editor-card {
-            border: 1px solid #3a3a3a;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 320px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            background: #1e1e1e; /* Default background for editor cards */
+            border: 1px solid #3a3a3a; border-radius: 8px;
+            width: 100%; max-width: 320px;
+            overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: #1e1e1e;
         }
-        .editor-header {
-            display: flex;
-            align-items: center;
-            padding: 8px;
-            background: #333;
-        }
+        .editor-header { display: flex; align-items: center; padding: 8px; background: #333; }
         .editor-header .dots { display: flex; }
         .editor-header .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; }
         .dot-1 { background: #ff5f56; }
@@ -300,7 +252,6 @@
         .editor-header .title { color: #ccc; font-family: var(--font-tech); font-size: 0.8rem; margin: 0 auto; }
         .editor-content { padding: 1rem; text-align: center; }
         
-        .vscode-card .editor-content { background: #1e1e1e; }
         .animated-code-block { font-family: var(--font-tech); text-align: left; font-size: 0.8rem; }
         .code-line { overflow: hidden; white-space: nowrap; width: 0; animation: typing-code 1.5s steps(30) forwards; }
         .reveal.visible .code-line-1 { animation-delay: 0.5s; }
@@ -309,10 +260,6 @@
         @keyframes typing-code { from { width: 0; } to { width: 100%; } }
         
         .docs-card .editor-content { background: #263249; color: #e0e0e0; }
-        .docs-card .toolbar { padding: 8px; text-align: center; }
-        .docs-card h2 { color: #82aaff; }
-        .docs-card .text-content p { color: #e0e0e0; }
-        
         .task-card .editor-content { background: #0079bf; color: #fff; }
         .task-board { display: flex; justify-content: center; }
         .task-list { background: #e0e0e0; color: #333; padding: 8px; border-radius: 4px; }
@@ -323,12 +270,10 @@
         .scientific-card .editor-content { background: #0a192f; color: #ccd6f6; position: relative; }
         .scientific-card h2 { color: var(--primary-glow-color); }
         .graph-bg { position: absolute; inset: 0; opacity: 0.1; stroke: var(--primary-glow-color); stroke-width: 2; fill: none; }
-        .reveal.visible .graph-bg { animation: draw-line 2s ease-out 0.8s forwards; }
 
         .holographic-card {
             position: relative; overflow: hidden;
-            border: 1px solid rgba(0,255,255,0.2);
-            transition: border-color 0.4s;
+            border: 1px solid rgba(0,255,255,0.2); transition: border-color 0.4s;
         }
         .holographic-card:hover { border-color: rgba(0,255,255,0.6); }
         .holographic-card::before {
@@ -338,57 +283,111 @@
         }
         .holographic-card:hover::before { opacity: 1; }
         
-        /* INFO PESSOAL */
-        .info-scan-card { 
-            background: rgba(10, 10, 26, 0.5); 
-            backdrop-filter: blur(5px); 
-            border: 1px solid rgba(0, 255, 255, 0.3); 
-            position: relative; 
-            overflow: hidden; 
-        } 
-        .scanline { 
-            position: absolute; 
-            top: -10%; left: 0; right: 0; 
-            height: 2px; 
-            background: linear-gradient(90deg, transparent, var(--primary-glow-color), transparent); 
-            box-shadow: 0 0 10px var(--primary-glow-color); 
-            animation: scan 4s ease-in-out infinite 1s; 
-        } 
-        @keyframes scan { 
-            0% { top: -10%; } 
-            100% { top: 110%; } 
-        } 
-        .info-scan-card .info-item { 
-            opacity: 0; 
-            transition: opacity 0.5s ease; 
-        } 
-        .reveal.visible .info-item-1 { animation: fade-in-up 0.5s forwards 1s; } 
-        .reveal.visible .info-item-2 { animation: fade-in-up 0.5s forwards 1.3s; } 
-        .reveal.visible .info-item-3 { animation: fade-in-up 0.5s forwards 1.6s; } 
+        .info-scan-card {
+            background: rgba(10, 10, 26, 0.5); backdrop-filter: blur(5px);
+            border: 1px solid rgba(0, 255, 255, 0.3); position: relative; overflow: hidden;
+        }
+        .scanline {
+            position: absolute; top: -10%; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-glow-color), transparent);
+            box-shadow: 0 0 10px var(--primary-glow-color);
+            animation: scan 4s ease-in-out infinite 1s;
+        }
+        @keyframes scan { 0% { top: -10%; } 100% { top: 110%; } }
+        .info-scan-card .info-item { opacity: 0; transition: opacity 0.5s ease; }
+        .reveal.visible .info-item-1 { animation: fade-in-up 0.5s forwards 1s; }
+        .reveal.visible .info-item-2 { animation: fade-in-up 0.5s forwards 1.3s; }
+        .reveal.visible .info-item-3 { animation: fade-in-up 0.5s forwards 1.6s; }
         
-        /* EXPERIÊNCIAS DIVERSAS */
-        .journey-svg .journey-path {
-            stroke-dasharray: 600;
-            stroke-dashoffset: 600;
-        }
-        .reveal.visible .journey-svg .journey-path {
-            animation: draw-line 3s ease-out forwards 0.5s;
-        }
-
-        .journey-svg .journey-stop {
-            opacity: 0;
-        }
-        .reveal.visible .journey-svg .journey-stop {
-            animation: light-up-stop 1s forwards;
-        }
+        .journey-svg .journey-stop { opacity: 0; }
+        .reveal.visible .journey-svg .journey-stop { animation: light-up-stop 1s forwards; }
         .reveal.visible .journey-svg .stop-2 { animation-delay: 1.5s; }
         .reveal.visible .journey-svg .stop-3 { animation-delay: 2.5s; }
-
         @keyframes light-up-stop {
-            to {
-                opacity: 1;
-                filter: drop-shadow(0 0 5px var(--primary-glow-color));
-            }
+            to { opacity: 1; filter: drop-shadow(0 0 5px var(--primary-glow-color)); }
+        }
+
+        /* --- Interactive Welcome & Game Styles --- */
+        #welcome-interactive-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden; z-index: 1;
+        }
+        #balloon-container { position: relative; width: 100%; height: 100%; }
+        .interactive-balloon {
+            position: absolute; bottom: -150px; background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(200, 200, 200, 0.5); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            animation-name: floatUp; animation-timing-function: linear; animation-iteration-count: infinite;
+            transform-style: preserve-3d; transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+        .interactive-balloon.popped { animation: pop 0.3s ease-out forwards; pointer-events: none; }
+        .interactive-balloon img { width: 60%; height: 60%; object-fit: contain; opacity: 0.8; }
+        @keyframes floatUp { to { transform: translateY(-120vh) translateX(var(--x-drift, 0)) rotate(var(--rotation, 0deg)); } }
+        @keyframes pop { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+
+        #game-view {
+            position: absolute; inset: 0; background-color: rgba(10, 20, 30, 0.95);
+            backdrop-filter: blur(8px); z-index: 100;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+            color: white; font-family: var(--font-tech); user-select: none;
+        }
+        #game-view.active { opacity: 1; pointer-events: auto; }
+
+        #player-rocket {
+            position: absolute; bottom: 20px; width: 50px; height: 80px; will-change: left;
+        }
+        #player-rocket img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 10px var(--primary-glow-color)); -webkit-user-drag: none; }
+        .oocyte-projectile {
+            position: absolute; width: 15px; height: 15px; will-change: top;
+            background-color: #ffdeb7; border-radius: 50%; box-shadow: 0 0 8px #ffd0a0;
+        }
+        .falling-balloon {
+            position: absolute; top: -100px; width: 70px; height: 70px; will-change: transform;
+            background-color: rgba(255, 255, 255, 0.8); border: 1px solid rgba(200, 200, 200, 0.5); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .falling-balloon img { width: 60%; height: 60%; object-fit: contain; }
+        
+        #game-info-area { position: absolute; top: 20px; right: 20px; text-align: right; }
+        #total-score-display { font-size: 1.5rem; text-shadow: 0 0 5px var(--primary-glow-color); margin-bottom: 0.5rem; }
+        #game-lives-display { display: flex; gap: 0.5rem; justify-content: flex-end; margin-bottom: 0.5rem; font-size: 1.5rem; }
+        .life-heart.lost { opacity: 0.2; }
+        #detailed-score-display { font-size: 0.8rem; line-height: 1.4; opacity: 0.8; display: grid; grid-template-columns: repeat(2, auto); gap: 0.25rem 1rem; }
+        .score-item { display: flex; justify-content: flex-end; align-items: center; }
+        .score-item img { width: 20px; height: 20px; margin-right: 8px; }
+
+        #close-game-btn {
+            position: absolute; top: 20px; left: 20px; font-size: 1.5rem; cursor: pointer;
+            background: rgba(255,255,255,0.1); border: 1px solid white; border-radius: 50%;
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; z-index: 110;
+        }
+        #close-game-btn:hover { background: rgba(255,255,255,0.3); }
+        
+        .game-overlay-screen {
+            position: absolute; inset: 0; background-color: rgba(0, 0, 0, 0.7); z-index: 105;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+        }
+        .game-overlay-screen.active { opacity: 1; pointer-events: auto; }
+        .game-overlay-screen h2 { font-size: 3rem; text-shadow: 0 0 10px var(--danger-glow-color); margin-bottom: 1rem; }
+        .game-overlay-screen p { font-size: 1.5rem; margin-bottom: 1rem; }
+        #final-detailed-score { display: grid; grid-template-columns: repeat(4, auto); gap: 1rem 1.5rem; margin-bottom: 2rem; font-size: 1.2rem; align-items: center; }
+        
+        #game-countdown-screen h2 { color: var(--success-glow-color); text-shadow: 0 0 10px var(--success-glow-color); }
+        #game-over-screen h2 { color: var(--danger-glow-color); }
+
+        @media (max-width: 768px) {
+            #player-rocket { width: 40px; height: 64px; bottom: 50px; }
+            .falling-balloon { width: 50px; height: 50px; }
+            .oocyte-projectile { width: 10px; height: 10px; }
+            #game-info-area { top: 10px; right: 10px; }
+            #total-score-display { font-size: 1.2rem; }
+            #detailed-score-display { font-size: 0.7rem; gap: 0.1rem 0.5rem; grid-template-columns: repeat(1, auto); }
+            .score-item img { width: 18px; height: 18px; }
+            #close-game-btn { top: 10px; left: 10px; width: 35px; height: 35px; font-size: 1.2rem; }
+            .game-overlay-screen h2 { font-size: 2.2rem; }
+            .game-overlay-screen p { font-size: 1.2rem; }
+            #final-detailed-score { grid-template-columns: repeat(2, auto); font-size: 1rem; gap: 0.5rem 1rem; }
         }
     </style>
 </head>
@@ -399,14 +398,17 @@
     <main>
         <!-- Welcome -->
         <section id="welcome">
-            <div class="reveal">
+            <div class="content-wrapper reveal">
                 <h1 class="text-4xl sm:text-6xl font-bold text-white uppercase tracking-widest glitch-text" data-text="BEM-VINDO">BEM-VINDO</h1>
                 <p class="mt-4 text-cyan-300 font-tech">SYSTEM INTERFACE: P.H.R.S. CURRICULO ONLINE</p>
-            </div>
-            <div class="mt-8 reveal delay-1">
-                <a id="iniciar-sistema-btn" class="terminal-button inline-block p-4 border-2 hover:bg-cyan-400 hover:text-black sound-on-click">
-                    INICIAR_SISTEMA
-                </a>
+                <div class="mt-8 reveal delay-1 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="#home" class="terminal-button inline-block p-4 border-2 sound-on-click">
+                        INICIAR_SISTEMA
+                    </a>
+                    <button id="iniciar-jogo-btn" class="terminal-button inline-block p-4 border-2 border-purple-500 text-purple-300 hover:bg-purple-500 hover:text-black sound-on-click">
+                        MODO_JOGO
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -530,7 +532,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                 </button>
             </div>
-            <a id="exp-journey-next-section-btn" href="#exp-diversas" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400 sound-on-click">
+            <a id="exp-journey-next-section-btn" href="#exp-diversas" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400 sound-on-click hidden">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </a>
         </section>
@@ -626,7 +628,7 @@
         <!-- Informações Adicionais -->
         <section id="adicionais" class="bg-black/20">
             <h2 class="reveal text-3xl font-bold text-cyan-400 mb-8">INFORMAÇÕES ADICIONAIS</h2>
-            <div class="w-full max-w-sm space-y-6 reveal"> <!-- Adicionado 'reveal' aqui -->
+            <div class="w-full max-w-sm space-y-6 reveal">
                 <div class="reveal delay-1 p-6 rounded-lg bg-gray-900/50 holographic-card">
                     <p class="text-4xl mb-2">👨‍💻</p>
                     <h3 class="text-xl font-bold">Curso de Programação WEB</h3>
@@ -638,34 +640,34 @@
                     <p class="text-green-300">Curso UDE | 30h</p>
                 </div>
             </div>
-            <a id="info-pessoal-next-btn" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400 sound-on-click"> 
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg> 
-            </a> 
+            <a href="#info-pessoal" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400 sound-on-click">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </a>
         </section>
         
         <!-- Informações Pessoais -->
         <section id="info-pessoal">
-            <div class="w-full max-w-sm p-6 rounded-lg info-scan-card reveal"> 
-                <div class="scanline"></div> 
-                <div class="text-left space-y-4"> 
-                    <h2 class="text-2xl font-bold text-purple-300 mb-4">INFORMAÇÕES PESSOAIS</h2> 
-                    <div class="info-item info-item-1"> 
-                        <span class="font-bold text-cyan-300">Localização:</span> 
-                        <span class="text-gray-300 block">Uberaba, Minas Gerais, Brasil</span> 
-                    </div> 
-                    <div class="info-item info-item-2"> 
-                        <span class="font-bold text-cyan-300">Idade:</span> 
-                        <span class="text-gray-300 block">28 anos</span> 
-                    </div> 
-                    <div class="info-item info-item-3"> 
-                        <span class="font-bold text-cyan-300">Habilitação:</span> 
-                        <span class="text-gray-300 block">CNH-D</span> 
-                    </div> 
-                </div> 
-            </div> 
-            <a id="contato-next-btn" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400"> 
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg> 
-            </a> 
+            <div class="w-full max-w-sm p-6 rounded-lg info-scan-card reveal">
+                <div class="scanline"></div>
+                <div class="text-left space-y-4">
+                    <h2 class="text-2xl font-bold text-purple-300 mb-4">INFORMAÇÕES PESSOAIS</h2>
+                    <div class="info-item info-item-1">
+                        <span class="font-bold text-cyan-300">Localização:</span>
+                        <span class="text-gray-300 block">Uberaba, Minas Gerais, Brasil</span>
+                    </div>
+                    <div class="info-item info-item-2">
+                        <span class="font-bold text-cyan-300">Idade:</span>
+                        <span class="text-gray-300 block">28 anos</span>
+                    </div>
+                    <div class="info-item info-item-3">
+                        <span class="font-bold text-cyan-300">Habilitação:</span>
+                        <span class="text-gray-300 block">CNH-D</span>
+                    </div>
+                </div>
+            </div>
+            <a href="#contato" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400 sound-on-click">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </a>
         </section>
 
         <!-- Final: Interactive Contact Terminal -->
@@ -673,49 +675,65 @@
             <div class="p-4 sm:p-6 rounded-lg bg-black/50 w-full max-w-sm sm:max-w-md terminal-window reveal">
                 <div id="terminal-output" class="terminal-output h-48 overflow-y-auto pr-2"></div>
             </div>
-            <!-- Container for choice buttons -->
             <div id="choice-container" class="mt-4 space-x-4" style="display: none;">
                 <button id="yes-btn" class="terminal-button p-3 border-2 sound-on-click">SIM</button>
                 <button id="no-btn" class="terminal-button p-3 border-2 sound-on-click">NÃO</button>
             </div>
-            <button id="start-connection-btn" class="terminal-button mt-4 p-4 border-2 hover:bg-cyan-400 hover:text-black sound-on-click" style="display: none;">
-                INICIAR CONEXÃO
-            </button>
             <a href="#welcome" class="next-btn p-3 rounded-full border-2 border-cyan-400 text-cyan-400 sound-on-click">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" /></svg>
             </a>
         </section>
-
     </main>
     
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     
     <script>
-    // Main site script - handles animations and navigation
     document.addEventListener('DOMContentLoaded', () => {
+
+        // --- CONFIGURATION ---
+        const BALLOON_COUNT = 15;
+        const GAME_LIVES = 3;
+        const LOGO_DATA = [
+            { id: 'logo1', src: 'ABS.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=ABS'` },
+            { id: 'logo2', src: 'zebuembryo.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=Zebu'`},
+            { id: 'logo3', src: 'copia.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=Copia'` },
+            { id: 'logo4', src: 'genex.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=Genex'` },
+            { id: 'logo5', src: 'embriovita.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=Embriovita'` },
+            { id: 'logo6', src: 'transova.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=Transova'` },
+            { id: 'logo7', src: 'alta.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=Alta'` },
+            { id: 'logo8', src: 'semex.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=Semex'` }
+        ];
+        const ROCKET_IMAGE_PATH = 'foguetee.png';
+
+        // --- GLOBAL STATE & ELEMENTS ---
+        let soundEnabled = false;
+        let lastSoundTime = 0;
+        const synth = new Tone.Synth().toDestination();
+        const pluckSynth = new Tone.PluckSynth().toDestination();
+        const welcomeSection = document.getElementById('welcome');
+        let gameRunning = false;
+        let terminalInitialized = false;
+
+        // --- INITIALIZATION ---
         if (window.location.hash) {
             window.location.hash = '';
         }
         setTimeout(() => {
-            const welcomeSection = document.getElementById('welcome');
-            if (welcomeSection) {
-                welcomeSection.scrollIntoView({ behavior: 'instant' });
-            }
-        }, 200);
+            document.getElementById('welcome')?.scrollIntoView({ behavior: 'instant' });
+        }, 100);
 
-        let soundEnabled = false;
-        const synth = new Tone.Synth().toDestination();
-        const pluckSynth = new Tone.PluckSynth().toDestination();
-        let lastSoundTime = 0;
+        particlesJS("particles-js", { particles: { number: { value: 80, density: { enable: true, value_area: 800 } }, color: { value: "#00ffff" }, shape: { type: "circle" }, opacity: { value: 0.5, random: true, anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false } }, size: { value: 2.5, random: true }, line_linked: { enable: true, distance: 150, color: "#888888", opacity: 0.2, width: 1 }, move: { enable: true, speed: 1, direction: "none", random: true, straight: false, out_mode: "out" } }, interactivity: { detect_on: "canvas", events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: true, mode: "push" }, resize: true }, modes: { grab: { distance: 140, line_linked: { opacity: 0.5 } }, push: { particles_nb: 4 } } }, retina_detect: true });
+        
+        setupWelcomeInteraction();
 
+        // --- AUDIO HANDLING ---
         function initAudio() {
             if (Tone.context.state !== 'running') {
                 Tone.context.resume();
             }
             soundEnabled = true;
         }
-        
         document.body.addEventListener('click', initAudio, { once: true });
 
         document.querySelectorAll('.sound-on-click').forEach(el => {
@@ -728,28 +746,16 @@
                 }
             });
         });
-
-        particlesJS("particles-js", { particles: { number: { value: 80, density: { enable: true, value_area: 800 } }, color: { value: "#00ffff" }, shape: { type: "circle" }, opacity: { value: 0.5, random: true, anim: { enable: true, speed: 0.5, opacity_min: 0.1, sync: false } }, size: { value: 2.5, random: true, anim: { enable: false } }, line_linked: { enable: true, distance: 150, color: "#888888", opacity: 0.2, width: 1 }, move: { enable: true, speed: 1, direction: "none", random: true, straight: false, out_mode: "out", bounce: false } }, interactivity: { detect_on: "canvas", events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: true, mode: "push" }, resize: true }, modes: { grab: { distance: 140, line_linked: { opacity: 0.5 } }, push: { particles_nb: 4 } } }, retina_detect: true });
-
-        const terminalSection = document.getElementById('contato');
-
+        
+        // --- SCROLL-BASED ANIMATIONS ---
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.querySelectorAll('.reveal').forEach(el => {
-                        el.classList.add('visible');
-                    });
+                    entry.target.querySelectorAll('.reveal:not(.visible)').forEach(el => el.classList.add('visible'));
                     
-                    if (entry.target.id === 'home') {
-                        runDecoderEffect(entry.target.querySelector('.decoder'));
-                    }
-                    if (entry.target.id === 'exp-journey') {
-                        showExperience(currentExperienceIndex);
-                    }
-                    // Specific trigger for the terminal initialization
-                    if (entry.target.id === 'contato') {
-                        // This check is now inside the interactive script logic
-                    }
+                    if (entry.target.id === 'home') runDecoderEffect(entry.target.querySelector('.decoder'));
+                    if (entry.target.id === 'exp-journey') showExperience(currentExperienceIndex);
+                    if (entry.target.id === 'contato' && !terminalInitialized) initTerminal();
 
                     if (soundEnabled) {
                         const now = Tone.context.currentTime;
@@ -757,32 +763,22 @@
                         synth.triggerAttackRelease('C2', '8n', nextScheduledTime, 0.1);
                         lastSoundTime = nextScheduledTime;
                     }
-                    
-                    // We don't unobserve the contact section to allow re-triggering if needed, logic is handled by flags
-                    if (entry.target.id !== 'contato') {
-                        revealObserver.unobserve(entry.target);
-                    }
                 }
             });
         }, { threshold: 0.3 });
 
-        document.querySelectorAll('section').forEach(section => {
-            revealObserver.observe(section);
-        });
+        document.querySelectorAll('section').forEach(section => revealObserver.observe(section));
 
         function runDecoderEffect(element) {
-            if(!element) return;
+            if(!element || element.dataset.decoded) return;
+            element.dataset.decoded = "true";
             const originalText = element.innerText;
-            const chars = '!<>-_\\/[]{}—=+*^?#________';
+            const chars = '!<>-_\\/[]{}—=+*^?#';
             element.innerHTML = '';
 
             originalText.split('').forEach(char => {
                 const span = document.createElement('span');
-                if(char === ' ') {
-                    span.innerHTML = '&nbsp;';
-                } else {
-                    span.textContent = char;
-                }
+                span.innerHTML = (char === ' ') ? '&nbsp;' : char;
                 element.appendChild(span);
             });
             
@@ -796,43 +792,26 @@
                         span.innerText = chars[Math.floor(Math.random() * chars.length)];
                     }
                 });
-
-                if(iteration >= originalText.length){ 
-                    clearInterval(interval);
-                }
-                
+                if(iteration >= originalText.length) clearInterval(interval);
                 iteration += 1 / 2;
             }, 40);
         }
         
+        // --- EXPERIENCE SLIDER ---
         const experiences = [
-            {
-                title: 'Auxiliar de Veterinário',
-                local: 'Clínica Amisvet',
-                period: '2023 - 2024',
-                log: 'Atuava na gestão de internações, com atualização de prontuários no SimplesVet, administração de medicações, cuidados com acessos venosos e higiene dos pacientes. Também auxiliava em consultas, cirurgias e rotinas clínicas.'
-            },
-            {
-                title: 'Monitor de Clínica Médica',
-                local: 'Faculdade Patos de Minas',
-                period: '2021 - 2022',
-                log: 'Atuava no suporte a cirurgias e consultas, auxiliando professores e alunos em rotinas clínicas e acadêmicas. Também era responsável pelo agendamento, organização e esterilização de materiais, além do controle de estoque e apoio nos cálculos de medicações e soluções.'
-            },
-            {
-                title: 'Estagiário',
-                local: 'Clínica Veterinária Animale',
-                period: '2020 - 2023',
-                log: 'Auxiliava no cuidado e recuperação dos animais, realizando alimentação, higiene, administração de medicações e manutenção de acessos venosos. Atualizava prontuários e prestava suporte em consultas, cirurgias, organização de materiais e rotina de banho e tosa.'
-            }
+            { title: 'Auxiliar de Veterinário', local: 'Clínica Amisvet', period: '2023 - 2024', log: 'Atuava na gestão de internações, com atualização de prontuários no SimplesVet, administração de medicações, cuidados com acessos venosos e higiene dos pacientes. Também auxiliava em consultas, cirurgias e rotinas clínicas.' },
+            { title: 'Monitor de Clínica Médica', local: 'Faculdade Patos de Minas', period: '2021 - 2022', log: 'Atuava no suporte a cirurgias e consultas, auxiliando professores e alunos em rotinas clínicas e acadêmicas. Também era responsável pelo agendamento, organização e esterilização de materiais, além do controle de estoque e apoio nos cálculos de medicações e soluções.' },
+            { title: 'Estagiário', local: 'Clínica Veterinária Animale', period: '2020 - 2023', log: 'Auxiliava no cuidado e recuperação dos animais, realizando alimentação, higiene, administração de medicações e manutenção de acessos venosos. Atualizava prontuários e prestava suporte em consultas, cirurgias, organização de materiais e rotina de banho e tosa.' }
         ];
-
         let currentExperienceIndex = 0;
         const experienceCardContainer = document.getElementById('experience-card-container');
         const prevExperienceBtn = document.getElementById('prev-experience-btn');
         const nextExperienceBtn = document.getElementById('next-experience-btn');
         const expJourneyNextSectionBtn = document.getElementById('exp-journey-next-section-btn');
 
-        function updateExperienceCard(index) {
+        function showExperience(index) {
+            if (index < 0 || index >= experiences.length || !experienceCardContainer) return;
+            currentExperienceIndex = index;
             const exp = experiences[index];
             experienceCardContainer.innerHTML = `
                 <div class="terminal-card">
@@ -840,436 +819,55 @@
                     <p class="line2"><span class="text-purple-300">...</span> LOCAL: ${exp.local}</p>
                     <p class="line3"><span class="text-purple-300">...</span> PERÍODO: ${exp.period}</p>
                     <p class="line4 text-gray-300"><span class="text-purple-300">...</span> LOG: ${exp.log}</p>
-                </div>
-            `;
-            setTimeout(() => {
-                experienceCardContainer.querySelector('.terminal-card').classList.add('visible');
-            }, 100);
-        }
-
-        function showExperience(index) {
-            if (index >= 0 && index < experiences.length) {
-                currentExperienceIndex = index;
-                updateExperienceCard(currentExperienceIndex);
-                updateNavigationButtons();
-            }
+                </div>`;
+            setTimeout(() => experienceCardContainer.querySelector('.terminal-card')?.classList.add('visible'), 100);
+            updateNavigationButtons();
         }
 
         function updateNavigationButtons() {
-            if (currentExperienceIndex === 0) {
-                prevExperienceBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                prevExperienceBtn.disabled = true;
-            } else {
-                prevExperienceBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                prevExperienceBtn.disabled = false;
-            }
+            if (!prevExperienceBtn) return;
+            prevExperienceBtn.disabled = currentExperienceIndex === 0;
+            prevExperienceBtn.classList.toggle('opacity-50', currentExperienceIndex === 0);
+            prevExperienceBtn.classList.toggle('cursor-not-allowed', currentExperienceIndex === 0);
 
-            if (currentExperienceIndex === experiences.length - 1) {
-                nextExperienceBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                nextExperienceBtn.disabled = true;
-                expJourneyNextSectionBtn.classList.remove('hidden');
-            } else {
-                nextExperienceBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                nextExperienceBtn.disabled = false;
-                expJourneyNextSectionBtn.classList.add('hidden');
-            }
+            nextExperienceBtn.disabled = currentExperienceIndex === experiences.length - 1;
+            nextExperienceBtn.classList.toggle('opacity-50', currentExperienceIndex === experiences.length - 1);
+            nextExperienceBtn.classList.toggle('cursor-not-allowed', currentExperienceIndex === experiences.length - 1);
+
+            expJourneyNextSectionBtn.classList.toggle('hidden', currentExperienceIndex !== experiences.length - 1);
         }
-
-        prevExperienceBtn.addEventListener('click', () => {
-            if (currentExperienceIndex > 0) {
-                showExperience(currentExperienceIndex - 1);
-            }
-        });
-
-        nextExperienceBtn.addEventListener('click', () => {
-            if (currentExperienceIndex < experiences.length - 1) {
-                showExperience(currentExperienceIndex + 1);
-            }
-        });
+        prevExperienceBtn?.addEventListener('click', () => showExperience(currentExperienceIndex - 1));
+        nextExperienceBtn?.addEventListener('click', () => showExperience(currentExperienceIndex + 1));
         
-        // Navigation buttons
-        const iniciarSistemaBtn = document.getElementById('iniciar-sistema-btn');
-        if (iniciarSistemaBtn) {
-            iniciarSistemaBtn.addEventListener('click', (event) => {
-                event.preventDefault();
-                document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
-            });
-        }
-        const infoPessoalNextBtn = document.getElementById('info-pessoal-next-btn');
-        if (infoPessoalNextBtn) {
-            infoPessoalNextBtn.addEventListener('click', (event) => {
-                event.preventDefault();
-                document.getElementById('info-pessoal').scrollIntoView({ behavior: 'smooth' });
-            });
-        }
-        const contatoNextBtn = document.getElementById('contato-next-btn');
-        if (contatoNextBtn) {
-            contatoNextBtn.addEventListener('click', (event) => {
-                event.preventDefault();
-                document.getElementById('contato').scrollIntoView({ behavior: 'smooth' });
-            });
-        }
-    });
-    </script>
+        // --- WELCOME & GAME LOGIC ---
+        function setupWelcomeInteraction() {
+            if (!welcomeSection) return;
+            const overlay = document.createElement('div');
+            overlay.id = 'welcome-interactive-overlay';
+            const balloonContainer = document.createElement('div');
+            balloonContainer.id = 'balloon-container';
+            overlay.appendChild(balloonContainer);
+            welcomeSection.appendChild(overlay);
 
-    <!-- ================================================================== -->
-    <!-- === INTERACTIVE WELCOME & CONTACT TERMINAL SCRIPT (UPDATED) ====== -->
-    <!-- ================================================================== -->
-    <style>
-        /* This style block is for the interactive elements only */
-        
-        #welcome-interactive-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1; /* Keep it above particles but below content */
-        }
-
-        #welcome-interactive-overlay::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
-            opacity: 0.5;
-        }
-
-        #balloon-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
-        .interactive-balloon {
-            position: absolute;
-            bottom: -150px; 
-            background-color: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(200, 200, 200, 0.5);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            animation-name: floatUp;
-            animation-timing-function: linear;
-            animation-iteration-count: infinite;
-            transform-style: preserve-3d;
-            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-        }
-
-        .interactive-balloon:hover {
-            transform: scale(1.1);
-            background-color: rgba(255, 255, 255, 0.9);
-        }
-
-        .interactive-balloon.popped {
-            animation: pop 0.3s ease-out forwards;
-            pointer-events: none;
-        }
-
-        .interactive-balloon img {
-            width: 60%;
-            height: 60%;
-            object-fit: contain;
-            opacity: 0.8;
-        }
-
-        @keyframes floatUp {
-            to {
-                transform: translateY(-120vh) translateX(var(--x-drift, 0)) rotate(var(--rotation, 0deg));
-            }
-        }
-
-        @keyframes pop {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-
-        /* Game styles */
-        #game-view {
-            position: absolute;
-            inset: 0;
-            background-color: rgba(10, 20, 30, 0.95);
-            backdrop-filter: blur(8px);
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-            color: white;
-            font-family: var(--font-tech);
-        }
-
-        #game-view.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        #player-rocket {
-            position: absolute;
-            bottom: 20px;
-            width: 50px;
-            height: 80px;
-            will-change: left;
-            user-select: none;
-            -webkit-user-drag: none;
-        }
-
-        #player-rocket img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 0 10px var(--primary-glow-color));
-            user-select: none;
-            -webkit-user-drag: none;
-        }
-
-        .oocyte-projectile {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            will-change: top;
-            background-color: #ffdeb7;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #ffd0a0;
-        }
-
-        .oocyte-projectile img {
-            display: none;
-        }
-
-        .falling-balloon {
-            position: absolute;
-            top: -100px;
-            width: 70px;
-            height: 70px;
-            will-change: transform;
-            background-color: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(200, 200, 200, 0.5);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .falling-balloon img {
-            width: 60%;
-            height: 60%;
-            object-fit: contain;
-            animation: none;
-        }
-        
-        #game-score-area {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            text-align: right;
-        }
-
-        #total-score-display {
-            font-size: 1.5rem;
-            text-shadow: 0 0 5px var(--primary-glow-color);
-            margin-bottom: 0.5rem;
-        }
-        
-        #detailed-score-display {
-            font-size: 0.8rem;
-            line-height: 1.4;
-            opacity: 0.8;
-            display: grid;
-            grid-template-columns: repeat(2, auto);
-            gap: 0.25rem 1rem;
-        }
-        
-        .score-item {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-        
-        .score-item img {
-            width: 20px;
-            height: 20px;
-            margin-right: 8px;
-        }
-
-        #close-game-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 110;
-        }
-        #close-game-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        
-        #game-over-screen {
-            position: absolute;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 105;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-        #game-over-screen.active {
-            opacity: 1;
-            pointer-events: none;
-        }
-        #game-over-screen h2 {
-            font-size: 3rem;
-            color: #ff5f56;
-            text-shadow: 0 0 10px #ff5f56;
-            margin-bottom: 1rem;
-        }
-        #game-over-screen p {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        #final-detailed-score {
-            display: grid;
-            grid-template-columns: repeat(4, auto);
-            gap: 1rem 1.5rem;
-            margin-bottom: 2rem;
-            font-size: 1.2rem;
-            align-items: center;
-        }
-        
-        @media (max-width: 768px) {
-            #player-rocket {
-                width: 40px;
-                height: 64px;
-                bottom: 50px;
-            }
-
-            .falling-balloon {
-                width: 50px;
-                height: 50px;
-            }
-
-            .oocyte-projectile {
-                width: 10px;
-                height: 10px;
+            for (let i = 0; i < BALLOON_COUNT; i++) {
+                createFloatingBalloon(balloonContainer);
             }
             
-            #game-score-area {
-                top: 10px;
-                right: 10px;
-            }
-
-            #total-score-display {
-                font-size: 1.2rem;
-            }
-
-            #detailed-score-display {
-                font-size: 0.7rem;
-                gap: 0.1rem 0.5rem;
-                grid-template-columns: repeat(1, auto);
-            }
-            
-            .score-item img {
-                width: 18px;
-                height: 18px;
-            }
-
-            #close-game-btn {
-                top: 10px;
-                left: 10px;
-                width: 35px;
-                height: 35px;
-                font-size: 1.2rem;
-            }
-
-            #game-over-screen h2 {
-                font-size: 2.2rem;
-            }
-
-            #game-over-screen p {
-                font-size: 1.2rem;
-            }
-
-            #final-detailed-score {
-                grid-template-columns: repeat(2, auto);
-                font-size: 1rem;
-                gap: 0.5rem 1rem;
-            }
-        }
-    </style>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-
-        // --- CONFIGURATION ---
-        const BALLOON_COUNT = 15;
-        const LOGO_DATA = [
-            { id: 'logo1', src: 'ABS.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=ABS'` },
-            { id: 'logo2', src: 'zebuembryo.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=Zebu' `},
-            { id: 'logo3', src: 'copia.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=Copia'` },
-            { id: 'logo4', src: 'genex.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=Genex'` },
-            { id: 'logo5', src: 'embriovita.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=Embriovita'` },
-            { id: 'logo6', src: 'transova.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=Transova'` },
-            { id: 'logo7', src: 'alta.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=Alta'` },
-            { id: 'logo8', src: 'semex.png', onerror: `this.onerror=null; this.src='https://placehold.co/60x60/FFFFFF/000000?text=Semex'` }
-        ];
-        const ROCKET_IMAGE_PATH = 'foguetee.png';
-
-        // --- ELEMENT SETUP ---
-        const welcomeSection = document.getElementById('welcome');
-        if (!welcomeSection) return;
-
-        const overlay = document.createElement('div');
-        overlay.id = 'welcome-interactive-overlay';
-        
-        const balloonContainer = document.createElement('div');
-        balloonContainer.id = 'balloon-container';
-        
-        const gameView = document.createElement('div');
-        gameView.id = 'game-view';
-        
-        overlay.appendChild(balloonContainer);
-        welcomeSection.appendChild(overlay); 
-        
-        const originalContent = welcomeSection.querySelector('.reveal');
-        if (originalContent) {
-            originalContent.style.position = 'relative';
-            originalContent.style.zIndex = '2';
+            document.getElementById('iniciar-jogo-btn')?.addEventListener('click', () => {
+                document.querySelectorAll('.interactive-balloon:not(.popped)').forEach(b => b.classList.add('popped'));
+                 try {
+                     if (soundEnabled) pluckSynth.triggerAttackRelease('C5', '8n', Tone.context.currentTime);
+                 } catch(e) { console.error("Tone.js sound failed:", e); }
+                setTimeout(() => startGame(), 400);
+            });
         }
 
-        // --- FLOATING BALLOON LOGIC ---
-        function createFloatingBalloon() {
+        function createFloatingBalloon(container) {
             const balloon = document.createElement('div');
             balloon.className = 'interactive-balloon';
             
             const size = Math.random() * 80 + 40;
-            balloon.style.width = `${size}px`;
-            balloon.style.height = `${size}px`;
-            balloon.style.left = `${Math.random() * 100}%`;
-            
-            const duration = Math.random() * 10 + 8;
-            balloon.style.animationDuration = `${duration}s`;
-            
-            const delay = Math.random() * 10;
-            balloon.style.animationDelay = `${delay}s`;
-
+            Object.assign(balloon.style, { width: `${size}px`, height: `${size}px`, left: `${Math.random() * 100}%`, animationDuration: `${Math.random() * 10 + 8}s`, animationDelay: `${Math.random() * 10}s` });
             balloon.style.setProperty('--x-drift', `${(Math.random() - 0.5) * 20}vw`);
             balloon.style.setProperty('--rotation', `${(Math.random() - 0.5) * 90}deg`);
 
@@ -1279,109 +877,86 @@
             logo.setAttribute('onerror', logoData.onerror);
             logo.draggable = false;
             logo.alt = logoData.id;
-            
             balloon.appendChild(logo);
-
-            balloon.addEventListener('click', () => {
-                if(gameRunning) return;
-                
-                document.querySelectorAll('.interactive-balloon:not(.popped)').forEach(b => {
-                    b.classList.add('popped');
-                });
-                
-                try {
-                   if (window.Tone && typeof pluckSynth !== 'undefined') {
-                        pluckSynth.triggerAttackRelease('C5', '8n', Tone.context.currentTime);
-                   }
-                } catch(e) { console.error("Tone.js sound failed:", e); }
-                
-                setTimeout(() => {
-                    if(!gameRunning) {
-                        startGame();
-                    }
-                }, 400);
-            }, { once: true });
-
-            balloonContainer.appendChild(balloon);
+            container.appendChild(balloon);
         }
 
-        for (let i = 0; i < BALLOON_COUNT; i++) {
-            createFloatingBalloon();
-        }
-
-        // --- ARCADE GAME LOGIC ---
-        let gameRunning = false;
-        let score = {};
-        let totalScore = 0;
-        let fallSpeed = 2.5;
+        let score = {}, totalScore = 0, lives = GAME_LIVES, fallSpeed = 2.5, targetSpawnRate = 800;
         let gameLoopId, shootIntervalId, targetSpawnInterval, gameOverTimeoutId;
-        let player, gameScoreArea, totalScoreDisplay, detailedScoreDisplay, projectilesContainer, targetsContainer, gameArea, gameOverScreen;
-        let targetSpawnRate = 800;
-
+        let player, gameInfoArea, totalScoreDisplay, detailedScoreDisplay, projectilesContainer, targetsContainer, gameArea, gameOverScreen, gameLivesDisplay, gameCountdownScreen;
+        
         function setupGameDOM() {
+            if(document.getElementById('game-view')) return;
+            const gameView = document.createElement('div');
+            gameView.id = 'game-view';
             gameView.innerHTML = `
                 <div id="close-game-btn">X</div>
-                <div id="game-score-area">
+                <div id="game-info-area">
+                    <div id="game-lives-display"></div>
                     <div id="total-score-display">Score: 0</div>
                     <div id="detailed-score-display"></div>
                 </div>
                 <div id="projectiles-container"></div>
                 <div id="targets-container"></div>
-                <div id="player-rocket">
-                    <img src="${ROCKET_IMAGE_PATH}" alt="Player Rocket" draggable="false" onerror="this.style.display='none'">
-                </div>
-                <div id="game-over-screen">
+                <div id="player-rocket"><img src="${ROCKET_IMAGE_PATH}" alt="Player Rocket" draggable="false" onerror="this.style.display='none'"></div>
+                <div id="game-countdown-screen" class="game-overlay-screen"><h2></h2></div>
+                <div id="game-over-screen" class="game-overlay-screen">
                     <h2>GAME OVER</h2>
                     <p id="final-total-score"></p>
                     <div id="final-detailed-score"></div>
-                </div>
-            `;
+                </div>`;
             welcomeSection.appendChild(gameView);
             
             player = document.getElementById('player-rocket');
-            gameScoreArea = document.getElementById('game-score-area');
+            gameInfoArea = document.getElementById('game-info-area');
             totalScoreDisplay = document.getElementById('total-score-display');
             detailedScoreDisplay = document.getElementById('detailed-score-display');
             projectilesContainer = document.getElementById('projectiles-container');
             targetsContainer = document.getElementById('targets-container');
             gameArea = document.getElementById('game-view');
             gameOverScreen = document.getElementById('game-over-screen');
+            gameCountdownScreen = document.getElementById('game-countdown-screen');
+            gameLivesDisplay = document.getElementById('game-lives-display');
             
             document.getElementById('close-game-btn').addEventListener('click', endGame);
             gameArea.addEventListener('mousemove', movePlayer);
             gameArea.addEventListener('touchmove', movePlayer, { passive: true });
         }
-
-        function initializeScores() {
-            score = {};
-            totalScore = 0;
-            fallSpeed = 2.5;
-            targetSpawnRate = 800;
-            LOGO_DATA.forEach(logo => {
-                score[logo.id] = 0;
-            });
-        }
-
+        
         function startGame() {
             if (gameRunning) return;
-            gameRunning = true;
-
-            if(!document.getElementById('game-view')) {
-                setupGameDOM();
-            }
-
-            balloonContainer.style.display = 'none';
-            gameView.classList.add('active');
+            setupGameDOM();
+            
+            document.getElementById('balloon-container').style.display = 'none';
+            gameArea.classList.add('active');
             gameOverScreen.classList.remove('active');
 
-            initializeScores();
-            updateScoreDisplay();
-            projectilesContainer.innerHTML = '';
-            targetsContainer.innerHTML = '';
-
-            gameLoopId = requestAnimationFrame(gameLoop);
-            shootIntervalId = setInterval(shoot, 250);
-            targetSpawnInterval = setInterval(spawnFallingBalloon, targetSpawnRate);
+            let countdown = 3;
+            gameCountdownScreen.classList.add('active');
+            const countdownInterval = setInterval(() => {
+                gameCountdownScreen.querySelector('h2').textContent = countdown;
+                if (soundEnabled) pluckSynth.triggerAttackRelease(countdown > 1 ? 'C5' : 'G5', '8n', Tone.context.currentTime);
+                countdown--;
+                if (countdown < 0) {
+                    clearInterval(countdownInterval);
+                    gameCountdownScreen.classList.remove('active');
+                    
+                    gameRunning = true;
+                    totalScore = 0;
+                    lives = GAME_LIVES;
+                    fallSpeed = 2.5;
+                    targetSpawnRate = 800;
+                    score = Object.fromEntries(LOGO_DATA.map(logo => [logo.id, 0]));
+                    
+                    updateScoreDisplay();
+                    projectilesContainer.innerHTML = '';
+                    targetsContainer.innerHTML = '';
+                    
+                    gameLoopId = requestAnimationFrame(gameLoop);
+                    shootIntervalId = setInterval(shoot, 250);
+                    targetSpawnInterval = setInterval(spawnFallingBalloon, targetSpawnRate);
+                }
+            }, 1000);
         }
 
         function cleanUpGame() {
@@ -1393,16 +968,13 @@
         }
 
         function endGame() {
-            if (!gameView.classList.contains('active')) return;
+            if (!gameArea?.classList.contains('active')) return;
             cleanUpGame();
-            
-            gameView.classList.remove('active');
+            gameArea.classList.remove('active');
+            const balloonContainer = document.getElementById('balloon-container');
             balloonContainer.style.display = 'block';
-
             balloonContainer.innerHTML = '';
-            for (let i = 0; i < BALLOON_COUNT; i++) {
-                createFloatingBalloon();
-            }
+            for (let i = 0; i < BALLOON_COUNT; i++) createFloatingBalloon(balloonContainer);
         }
         
         function triggerGameOver() {
@@ -1410,42 +982,22 @@
 
             document.getElementById('final-total-score').textContent = `PONTUAÇÃO FINAL: ${totalScore}`;
             const finalDetailedScoreContainer = document.getElementById('final-detailed-score');
-            finalDetailedScoreContainer.innerHTML = '';
-            LOGO_DATA.forEach(logo => {
-                if (score[logo.id] > 0) {
-                     finalDetailedScoreContainer.innerHTML += `
-                        <div class="score-item">
-                            <img src="${logo.src}" alt="${logo.id}" onerror="${logo.onerror}">
-                            <span>x ${score[logo.id]}</span>
-                        </div>
-                    `;
-                }
-            });
+            finalDetailedScoreContainer.innerHTML = LOGO_DATA.filter(logo => score[logo.id] > 0)
+                .map(logo => `<div class="score-item"><img src="${logo.src}" alt="${logo.id}" onerror="${logo.onerror}"><span>x ${score[logo.id]}</span></div>`)
+                .join('');
 
             gameOverScreen.classList.add('active');
-            try {
-                if (window.Tone && typeof synth !== 'undefined') {
-                   synth.triggerAttackRelease('C3', '4n', Tone.context.currentTime);
-                }
-            } catch(e) { console.error("Tone.js sound failed:", e); }
-
+            if (soundEnabled) synth.triggerAttackRelease('C3', '4n', Tone.context.currentTime);
             gameOverTimeoutId = setTimeout(endGame, 4000);
         }
         
         function updateScoreDisplay() {
             totalScoreDisplay.textContent = `Score: ${totalScore}`;
+            gameLivesDisplay.innerHTML = Array.from({length: GAME_LIVES}, (_, i) => `<span class="life-heart ${i >= lives ? 'lost' : ''}">❤️</span>`).join('');
             
-            detailedScoreDisplay.innerHTML = '';
-            LOGO_DATA.forEach(logo => {
-                if (score[logo.id] > 0) {
-                    detailedScoreDisplay.innerHTML += `
-                        <div class="score-item">
-                            <img src="${logo.src}" alt="${logo.id}" onerror="${logo.onerror}">
-                            <span>x ${score[logo.id]}</span>
-                        </div>
-                    `;
-                }
-            });
+            detailedScoreDisplay.innerHTML = LOGO_DATA.filter(logo => score[logo.id] > 0)
+                .map(logo => `<div class="score-item"><img src="${logo.src}" alt="${logo.id}" onerror="${logo.onerror}"><span>x ${score[logo.id]}</span></div>`)
+                .join('');
         }
 
         function movePlayer(e) {
@@ -1454,43 +1006,30 @@
             const gameRect = gameArea.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             let x = clientX - gameRect.left;
-            
             const playerWidth = player.offsetWidth;
             x = Math.max(playerWidth / 2, Math.min(x, gameRect.width - playerWidth / 2));
-            
             player.style.left = `${x}px`;
             player.style.transform = `translateX(-50%)`;
         }
 
         function shoot() {
             if (!gameRunning) return;
-
             const projectile = document.createElement('div');
             projectile.className = 'oocyte-projectile';
-            
             const playerRect = player.getBoundingClientRect();
             const gameRect = gameArea.getBoundingClientRect();
-
             projectile.style.left = `${playerRect.left - gameRect.left + playerRect.width / 2 - 7.5}px`;
             projectile.style.top = `${playerRect.top - gameRect.top}px`;
-            
             projectilesContainer.appendChild(projectile);
-            
-            try {
-                if (window.Tone && typeof pluckSynth !== 'undefined') {
-                    pluckSynth.triggerAttackRelease('A5', '16n', Tone.context.currentTime, 0.3);
-                }
-            } catch(e) { console.error("Tone.js sound failed:", e); }
+            if (soundEnabled) pluckSynth.triggerAttackRelease('A5', '16n', Tone.context.currentTime, 0.3);
         }
 
         function spawnFallingBalloon() {
             if (!gameRunning) return;
             const target = document.createElement('div');
             target.className = 'falling-balloon';
-            
             const logoData = LOGO_DATA[Math.floor(Math.random() * LOGO_DATA.length)];
             target.dataset.logoId = logoData.id;
-            
             target.style.left = `${Math.random() * (gameArea.offsetWidth - 70)}px`;
             target.innerHTML = `<img src="${logoData.src}" alt="${logoData.id}" onerror="${logoData.onerror}">`;
             targetsContainer.appendChild(target);
@@ -1498,10 +1037,8 @@
         
         function updateDifficulty() {
             fallSpeed = 2.5 + (totalScore / 50);
-
             const newSpawnRate = 800 - (totalScore * 2);
             targetSpawnRate = Math.max(200, newSpawnRate);
-
             clearInterval(targetSpawnInterval);
             targetSpawnInterval = setInterval(spawnFallingBalloon, targetSpawnRate);
         }
@@ -1510,77 +1047,53 @@
             if (!gameRunning) return;
 
             document.querySelectorAll('.oocyte-projectile').forEach(p => {
-                let top = p.offsetTop;
-                p.style.top = `${top - 12}px`;
-                if (top < -30) {
-                    p.remove();
-                }
+                p.style.top = `${p.offsetTop - 12}px`;
+                if (p.offsetTop < -30) p.remove();
             });
 
             document.querySelectorAll('.falling-balloon').forEach(t => {
-                let top = t.offsetTop;
-                t.style.top = `${top + fallSpeed}px`; 
-                if (top > gameArea.offsetHeight) {
+                t.style.top = `${t.offsetTop + fallSpeed}px`;
+                if (t.offsetTop > gameArea.offsetHeight) {
                     t.remove();
-                    triggerGameOver();
+                    lives--;
+                    updateScoreDisplay();
+                    if(soundEnabled) synth.triggerAttackRelease('A2', '8n', Tone.context.currentTime);
+                    if (lives <= 0) triggerGameOver();
                 }
             });
 
-            const projectiles = projectilesContainer.children;
-            const targets = targetsContainer.children;
-
-            for (let p of [...projectiles]) {
+            for (let p of [...projectilesContainer.children]) {
                 const pRect = p.getBoundingClientRect();
-                for (let t of [...targets]) {
+                for (let t of [...targetsContainer.children]) {
                     const tRect = t.getBoundingClientRect();
                     if (!(pRect.right < tRect.left || pRect.left > tRect.right || pRect.bottom < tRect.top || pRect.top > tRect.bottom)) {
-                       const logoId = t.dataset.logoId;
-                       if (logoId && score.hasOwnProperty(logoId)) {
+                        const logoId = t.dataset.logoId;
+                        if (logoId && score.hasOwnProperty(logoId)) {
                             score[logoId]++;
                             totalScore += 10;
-                       }
-                       
-                       updateDifficulty();
-
-                       t.remove();
-                       p.remove();
-                       updateScoreDisplay();
-                       try {
-                            if (window.Tone && typeof synth !== 'undefined') {
-                                synth.triggerAttackRelease('E4', '8n', Tone.context.currentTime);
-                            }
-                       } catch(e) { console.error("Tone.js sound failed:", e); }
-                       break;
+                        }
+                        updateDifficulty();
+                        t.remove();
+                        p.remove();
+                        updateScoreDisplay();
+                        if(soundEnabled) synth.triggerAttackRelease('E4', '8n', Tone.context.currentTime);
+                        break;
                     }
                 }
             }
-            
             gameLoopId = requestAnimationFrame(gameLoop);
         }
 
         // --- CONTACT TERMINAL LOGIC ---
         const terminalOutput = document.getElementById('terminal-output');
-        const startConnectionBtn = document.getElementById('start-connection-btn');
         const choiceContainer = document.getElementById('choice-container');
         const yesBtn = document.getElementById('yes-btn');
         const noBtn = document.getElementById('no-btn');
-        let terminalInitialized = false;
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && entry.target.id === 'contato') {
-                    initTerminal();
-                }
-            });
-        }, { threshold: 0.5 });
-
-        observer.observe(document.getElementById('contato'));
-
-        function typeToTerminal(text, callback, speed = 20) {
+        
+        function typeToTerminal(text, callback, speed = 25) {
             let i = 0;
-            if (terminalOutput.innerHTML !== '') {
-                terminalOutput.innerHTML += '\n';
-            }
+            if (terminalOutput.innerHTML !== '') terminalOutput.innerHTML += '\n';
+
             const interval = setInterval(() => {
                 if (i < text.length) {
                     terminalOutput.innerHTML += text.charAt(i);
@@ -1593,41 +1106,37 @@
             }, speed);
         }
 
-        function showNegotiationPrompt() {
-            typeToTerminal("Gostou do que viu e tem interesse em     negociar  com o candidato?", () => {
-                choiceContainer.style.display = 'block';
-            });
-        }
-
         function initTerminal() {
-            if (terminalInitialized) return;
+            if(terminalInitialized) return;
             terminalInitialized = true;
-            
             typeToTerminal("Terminal de Contato Ativo...", () => {
-                showNegotiationPrompt();
+                typeToTerminal("Gostou do que viu e tem interesse em negociar com o candidato?", () => {
+                    choiceContainer.style.display = 'flex';
+                    choiceContainer.style.justifyContent = 'center';
+                });
             });
         }
         
-        noBtn.addEventListener('click', () => {
+        noBtn?.addEventListener('click', () => {
             choiceContainer.style.display = 'none';
-            typeToTerminal("Opção incorreta. Tente novamente...", () => {
-                setTimeout(() => {
-                    showNegotiationPrompt();
-                }, 1000);
-            });
+            typeToTerminal("Entendido. Encerrando conexão...", null);
         });
 
-        yesBtn.addEventListener('click', () => {
+        yesBtn?.addEventListener('click', () => {
             choiceContainer.style.display = 'none';
-            typeToTerminal("Iniciando protocolo de conexão...", () => {
-                startConnectionBtn.style.display = 'block';
+            typeToTerminal("Ótimo! Iniciando protocolo de conexão...", () => {
+                 typeToTerminal("... Contato via WhatsApp disponível.", () => {
+                     const whatsappLink = document.createElement('a');
+                     whatsappLink.href = 'https://api.whatsapp.com/send/?phone=5534988301561&text=Ol%C3%A1%2C+vi+seu+portf%C3%B3lio+e+gostaria+de+conversar%21&type=phone_number&app_absent=0';
+                     whatsappLink.target = '_blank';
+                     whatsappLink.className = 'terminal-button mt-4 p-4 border-2 inline-block';
+                     whatsappLink.textContent = 'ABRIR WHATSAPP';
+                     terminalOutput.parentElement.appendChild(whatsappLink);
+                 });
             });
-        });
-
-        startConnectionBtn.addEventListener('click', () => {
-            window.location.href = 'https://api.whatsapp.com/send/?phone=5534988301561&text=Quero+te+contratar%21&type=phone_number&app_absent=0'; 
         });
     });
     </script>
 </body>
 </html>
+
